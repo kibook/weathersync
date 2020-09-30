@@ -30,7 +30,7 @@ local TimeIsFrozen = false
 -- Whether weather is frozen at serer start
 local WeatherIsFrozen = false
 
--- Number of hours to queue weather for
+-- Number of weather intervals to queue weather for
 local MaxForecast = 23
 
 -- How often in ms to sync with clients
@@ -271,10 +271,10 @@ end, true)
 RegisterCommand('forecast', function(source, args, raw)
 	local forecast = {}
 	for i = 0, #WeatherForecast do
-		local time = (TimeIsFrozen and CurrentTime or (CurrentTime + 3600 * i) % 86400)
-		local h, m, s = TimeToHMS(time)
+		local time = (TimeIsFrozen and CurrentTime or (CurrentTime + WeatherInterval * i) % 86400)
+		local h, m, s = TimeToHMS(time - time % WeatherInterval)
 		local weather = (i == 0 and CurrentWeather or WeatherForecast[i])
-		forecast[#forecast + 1] = {time = string.format('%.2d:00', h), weather = weather}
+		table.insert(forecast, {time = string.format('%.2d:%.2d', h, m), weather = weather})
 	end
 
 	if source and source > 0 then
