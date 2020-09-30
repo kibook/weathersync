@@ -12,6 +12,15 @@
 
 - Adjustable timescale
 
+## Commands
+
+| Command      | Description                                               |
+|--------------|-----------------------------------------------------------|
+| `/forecast`  | Displays a forecast of upcoming weather.                  |
+| `/time`      | Set the server time.                                      |
+| `/timescale` | Set the ratio of in-game seconds to real-time seconds.    |
+| `/weather`   | Set the server weather.                                   |
+
 ## Configuration
 
 | Variable           | Description | Example |
@@ -25,12 +34,3 @@
 | `MaxForecast`      | Number of weather intervals to queue up.            | `23` (24-hour forecast)               |
 | `SyncDelay`        | How often in ms to sync with clients.               | `5000`                                |
 | `WeatherPattern`   | A table describing the the weather pattern.         | See [server.lua](server.lua)          |
-
-## Commands
-
-| Command      | Description                                               |
-|--------------|-----------------------------------------------------------|
-| `/forecast`  | Displays a forecast of upcoming weather.                  |
-| `/time`      | Set the server time.                                      |
-| `/timescale` | Set the ratio of in-game seconds to real-time seconds.    |
-| `/weather`   | Set the server weather.                                   |
