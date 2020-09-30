@@ -1,0 +1,60 @@
+@font-face {
+	font-family: "Chinese Rocks";
+	src: url('CHINESER.TTF');
+}
+
+html, body {
+	background: none;
+	width: 100vw;
+	height: 100vh;
+	overflow: hidden;
+}
+
+#forecast-parent {
+	display: none;
+}
+
+#forecast {
+	position: absolute;
+	top: 50vh;
+	right: 0vw;
+	transform: translate(0, -50%);
+	background-color: rgba(0, 0, 0, 0.5);
+	color: white;
+	display: table;
+	padding-top: 0.25vw;
+	padding-bottom: 0.25vw;
+	padding-left: 0.5vw;
+	padding-right: 0.5vw;
+	font-size: 1.7vw;
+	font-family: "Chinese Rocks";
+}
+
+.forecast-hour {
+	display: table-row;
+}
+
+.forecast-time {
+	display: table-cell;
+	text-align: right;
+	vertical-align: middle;
+}
+
+.forecast-weather {
+	display: table-cell;
+	text-align: right;
+	vertical-align: middle;
+}
+
+#temperature {
+	display: none;
+	position: absolute;
+	top: 0;
+	left: 50%;
+	transform: translate(-50%, 0);
+	background-color: rgba(0, 0, 0, 0.5);
+	color: white;
+	font-size: 1.7vw;
+	font-family: "Chinese Rocks";
+	padding: 0.5vw;
+}
