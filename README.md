@@ -12,6 +12,12 @@
 
 - Adjustable timescale
 
+## Examples
+
+| Forecast UI | Region-specific weather |
+|---|---|
+| [![Forecast UI](https://i.imgur.com/pXPTwnUm.jpg)](https://imgur.com/pXPTwnU) | [![Region-specific weather](https://i.imgur.com/Loif9SMm.jpg)](https://imgur.com/Loif9SM) |
+
 ## Commands
 
 | Command      | Description                                               |
