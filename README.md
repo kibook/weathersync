@@ -1,6 +1,6 @@
 # RedM weather and time sync
 
-Features:
+## Features
 
 - Syncs time and weather for all players
 
@@ -12,7 +12,7 @@ Features:
 
 - Adjustable timescale
 
-# Commands
+## Commands
 
 | Command      | Description                                               |
 |--------------|-----------------------------------------------------------|
