@@ -125,15 +125,7 @@ RegisterNUICallback('closeForecast', function()
 	SetNuiFocus(false, false)
 end)
 
-RegisterCommand('temp', function(source, args, raw)
-	local x, y, z = table.unpack(GetEntityCoords(PlayerPedId()))
-	local temperature = GetTemperatureAtCoords(x, y, z)
-	local metric = ShouldUseMetricTemperature();
-
-	TriggerEvent('chat:addMessage', {
-		args = {'Temperature', string.format('%d °%s', math.floor(temperature), (metric and 'C' or 'F'))}
-	})
-end, false)
+TriggerEvent('chat:addSuggestion', '/forecast', 'Display upcoming weather', {})
 
 TriggerEvent('chat:addSuggestion', '/time', 'Change the time of day', {
 	{name = 'h', help = 'Hour, 0-23'},
@@ -141,6 +133,10 @@ TriggerEvent('chat:addSuggestion', '/time', 'Change the time of day', {
 	{name = 's', help = 'Second, 0-59'},
 	{name = 'transition', help = 'Transition time in milliseconds'},
 	{name = 'freeze', help = '0 = don\'t freeze time, 1 = freeze time'}
+})
+
+TriggerEvent('chat:addSuggestion', '/timescale', 'Change the rate at which time passes', {
+	{name = 'scale', help = 'Number of in-game seconds per real-time second'}
 })
 
 TriggerEvent('chat:addSuggestion', '/weather', 'Change the weather', {
