@@ -125,21 +125,23 @@ RegisterNUICallback('closeForecast', function()
 	SetNuiFocus(false, false)
 end)
 
-TriggerEvent('chat:addSuggestion', '/forecast', 'Display upcoming weather', {})
+CreateThread(function()
+	TriggerEvent('chat:addSuggestion', '/forecast', 'Display upcoming weather', {})
 
-TriggerEvent('chat:addSuggestion', '/time', 'Change the time of day', {
-	{name = 'h', help = 'Hour, 0-23'},
-	{name = 'm', help = 'Minute, 0-59'},
-	{name = 's', help = 'Second, 0-59'},
-	{name = 'transition', help = 'Transition time in milliseconds'},
-	{name = 'freeze', help = '0 = don\'t freeze time, 1 = freeze time'}
-})
+	TriggerEvent('chat:addSuggestion', '/time', 'Change the time of day', {
+		{name = 'h', help = 'Hour, 0-23'},
+		{name = 'm', help = 'Minute, 0-59'},
+		{name = 's', help = 'Second, 0-59'},
+		{name = 'transition', help = 'Transition time in milliseconds'},
+		{name = 'freeze', help = '0 = don\'t freeze time, 1 = freeze time'}
+	})
 
-TriggerEvent('chat:addSuggestion', '/timescale', 'Change the rate at which time passes', {
-	{name = 'scale', help = 'Number of in-game seconds per real-time second'}
-})
+	TriggerEvent('chat:addSuggestion', '/timescale', 'Change the rate at which time passes', {
+		{name = 'scale', help = 'Number of in-game seconds per real-time second'}
+	})
 
-TriggerEvent('chat:addSuggestion', '/weather', 'Change the weather', {
-	{name = 'type', help = 'The type of weather to change to'},
-	{name = 'freeze', help = '0 = don\'t freeze weather, 1 = freeze weather'}
-})
+	TriggerEvent('chat:addSuggestion', '/weather', 'Change the weather', {
+		{name = 'type', help = 'The type of weather to change to'},
+		{name = 'freeze', help = '0 = don\'t freeze weather, 1 = freeze weather'}
+	})
+end)

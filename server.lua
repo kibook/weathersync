@@ -218,29 +218,30 @@ function PrintMessage(target, message)
 	end
 end
 
-RegisterCommand('weather', function(source, args, raw)
-	local weather = args[1]
+function SetWeather(weather, transition, freeze)
+	TriggerClientEvent('weatherSync:changeWeather', -1, weather, transition)
+	CurrentWeather = weather
+	WeatherIsFrozen = freeze
+	GenerateForecast()
+end
 
-	if not weather then
-		return
-	end
+RegisterCommand('weather', function(source, args, raw)
+	local weather = (args[1] and args[1] or CurrentWeather)
+	local transition = (args[2] and tonumber(args[2]) or 10.0)
+	local freeze = args[3] == '1'
 
 	if Contains(WeatherTypes, weather) then
-		TriggerClientEvent('weatherSync:changeWeather', -1, args[1], 10.0)
-
-		CurrentWeather = weather
-
-		if args[2] == '1' then
-			WeatherIsFrozen = true
-		elseif args[2] == '0' then
-			WeatherIsFrozen = false
-		end
-
-		GenerateForecast()
+		SetWeather(weather, transition * 1.0, freeze)
 	else
 		PrintMessage(source, {color = {255, 0, 0}, args = {'Error', 'Unknown weather type: ' .. weather}})
 	end
 end, true)
+
+function SetTime(h, m, s, t, f)
+	TriggerClientEvent('weatherSync:changeTime', -1, h, m, s, t, true)
+	CurrentTime = HMSToTime(h, m, s)
+	TimeIsFrozen = f
+end
 
 RegisterCommand('time', function(source, args, raw)
 	if #args > 0 then
@@ -250,10 +251,7 @@ RegisterCommand('time', function(source, args, raw)
 		local t = (args[4] and tonumber(args[4]) or 0)
 		local f = args[5] == '1'
 
-		TriggerClientEvent('weatherSync:changeTime', -1, h, m, s, t, f)
-
-		CurrentTime = HMSToTime(h, m, s)
-		TimeIsFrozen = f
+		SetTime(h, m, s, t, f)
 	else
 		local h, m, s = TimeToHMS(CurrentTime)
 		PrintMessage(source, {color = {255, 255, 128}, args = {'Time', string.format('%.2d:%.2d:%.2d', h, m, s)}})

@@ -11,10 +11,8 @@ files {
 	'ui/CHINESER.TTF'
 }
 
-server_scripts {
-	'server.lua'
-}
+client_script 'client.lua'
 
-client_scripts {
-	'client.lua'
-}
+server_script 'server.lua'
+server_export 'SetTime'
+server_export 'SetWeather'
