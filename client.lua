@@ -1,5 +1,9 @@
 local CurrentWeather = ''
 
+RegisterNetEvent('weatherSync:changeWeather')
+RegisterNetEvent('weatherSync:changeTime')
+RegisterNetEvent('weatherSync:displayForecast')
+
 function IsInSnowyRegion(x, y, z)
 	return GetDistanceBetweenCoords(x, y, z, -1361.63, 2393.23, 306.62, false) <= 1400
 end
@@ -58,7 +62,6 @@ function SetWeatherType(weatherHash, p1, p2, overrideNetwork, transitionTime, p5
 	Citizen.InvokeNative(0x59174F1AFE095B5A, weatherHash, true, false, true, transitionTime, false)
 end
 
-RegisterNetEvent('weatherSync:changeWeather')
 AddEventHandler('weatherSync:changeWeather', function(weather, transitionTime)
 	local translatedWeather = TranslateWeatherForRegion(weather)
 
@@ -72,7 +75,6 @@ function NetworkOverrideClockTime(hour, minute, second, transitionTime, freezeTi
 	Citizen.InvokeNative(0x669E223E64B1903C, hour, minute, second, transitionTime, freezeTime)
 end
 
-RegisterNetEvent('weatherSync:changeTime')
 AddEventHandler('weatherSync:changeTime', function(hour, minute, second, transitionTime, freezeTime)
 	NetworkOverrideClockTime(hour, minute, second, transitionTime, freezeTime)
 end)
@@ -101,7 +103,6 @@ local WeatherIcons = {
 	['whiteout']       = '❄️'
 }
 
-RegisterNetEvent('weatherSync:displayForecast')
 AddEventHandler('weatherSync:displayForecast', function(forecast)
 	for i = 1, #forecast do
 		forecast[i].weather = WeatherIcons[TranslateWeatherForRegion(forecast[i].weather)]

@@ -258,9 +258,13 @@ RegisterCommand('time', function(source, args, raw)
 	end
 end, true)
 
+function SetTimescale(scale)
+	CurrentTimescale = scale
+end
+
 RegisterCommand('timescale', function(source, args, raw)
 	if args[1] then
-		CurrentTimescale = tonumber(args[1]) * 1.0
+		SetTimescale(tonumber(args[1]) * 1.0)
 	else
 		PrintMessage(source, {color = {255, 255, 128}, args = {'Timescale', CurrentTimescale}})
 	end
