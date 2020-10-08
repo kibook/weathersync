@@ -270,6 +270,18 @@ RegisterCommand('timescale', function(source, args, raw)
 	end
 end, true)
 
+function SetSyncDelay(delay)
+	SyncDelay = delay
+end
+
+RegisterCommand('syncdelay', function(source, args, raw)
+	if args[1] then
+		SetSyncDelay(tonumber(args[1]))
+	else
+		PrintMessage(source, {color = {255, 255, 128}, args = {'Sync delay', SyncDelay}})
+	end
+end, true)
+
 RegisterCommand('forecast', function(source, args, raw)
 	local forecast = {}
 	for i = 0, #WeatherForecast do
@@ -291,8 +303,9 @@ RegisterCommand('forecast', function(source, args, raw)
 	end
 end, false)
 
-function SyncTime()
-	local timeTransition = (CurrentTime == 0 and 0 or SyncDelay)
+function SyncTime(tick)
+	-- Ensure time doesn't wrap around when transitioning from ~23:59:59 to ~00:00:00
+	local timeTransition = ((86400 - CurrentTime + tick) % 86400 <= tick and 0 or SyncDelay)
 	local hour, minute, second = TimeToHMS(CurrentTime)
 	TriggerClientEvent('weatherSync:changeTime', -1, hour, minute, second, timeTransition, false)
 end
@@ -323,7 +336,7 @@ CreateThread(function()
 			end
 		end
 
-		SyncTime()
+		SyncTime(tick)
 		SyncWeather()
 	end
 end)

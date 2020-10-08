@@ -143,6 +143,7 @@ CreateThread(function()
 
 	TriggerEvent('chat:addSuggestion', '/weather', 'Change the weather', {
 		{name = 'type', help = 'The type of weather to change to'},
+		{name = 'transition', help = 'Transition time in seconds'},
 		{name = 'freeze', help = '0 = don\'t freeze weather, 1 = freeze weather'}
 	})
 end)
