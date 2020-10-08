@@ -23,6 +23,7 @@
 | Command      | Description                                               |
 |--------------|-----------------------------------------------------------|
 | `/forecast`  | Displays a forecast of upcoming weather.                  |
+| `/syncdelay` | Set how often the server syncs with clients.              |
 | `/time`      | Set the server time.                                      |
 | `/timescale` | Set the ratio of in-game seconds to real-time seconds.    |
 | `/weather`   | Set the server weather.                                   |
