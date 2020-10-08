@@ -10,11 +10,8 @@ html, body {
 	overflow: hidden;
 }
 
-#forecast-parent {
-	display: none;
-}
-
 #forecast {
+	display: none;
 	position: absolute;
 	top: 50vh;
 	right: 0vw;

@@ -168,6 +168,8 @@ local WeatherTypes = {
 local WeatherTicks = 0
 local WeatherForecast = {}
 
+RegisterNetEvent('weatherSync:requestUpdatedForecast')
+
 function NextWeather(weather)
 	if WeatherIsFrozen then
 		return weather
@@ -282,8 +284,9 @@ RegisterCommand('syncdelay', function(source, args, raw)
 	end
 end, true)
 
-RegisterCommand('forecast', function(source, args, raw)
+function CreateForecast()
 	local forecast = {}
+
 	for i = 0, #WeatherForecast do
 		local time = (TimeIsFrozen and CurrentTime or (CurrentTime + WeatherInterval * i) % 86400)
 		local h, m, s = TimeToHMS(time - time % WeatherInterval)
@@ -291,9 +294,14 @@ RegisterCommand('forecast', function(source, args, raw)
 		table.insert(forecast, {time = string.format('%.2d:%.2d', h, m), weather = weather})
 	end
 
+	return forecast
+end
+
+RegisterCommand('forecast', function(source, args, raw)
 	if source and source > 0 then
-		TriggerClientEvent('weatherSync:displayForecast', source, forecast)
+		TriggerClientEvent('weatherSync:toggleForecast', source)
 	else
+		local forecast = CreateForecast()
 		PrintMessage(source, {args = {'WEATHER FORECAST'}})
 		PrintMessage(source, {args = {'================'}})
 		for i = 1, #forecast do
@@ -302,6 +310,10 @@ RegisterCommand('forecast', function(source, args, raw)
 		PrintMessage(source, {args = {'================'}})
 	end
 end, false)
+
+AddEventHandler('weatherSync:requestUpdatedForecast', function()
+	TriggerClientEvent('weatherSync:updateForecast', source, CreateForecast())
+end)
 
 function SyncTime(tick)
 	-- Ensure time doesn't wrap around when transitioning from ~23:59:59 to ~00:00:00

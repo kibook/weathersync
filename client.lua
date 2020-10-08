@@ -2,7 +2,8 @@ local CurrentWeather = ''
 
 RegisterNetEvent('weatherSync:changeWeather')
 RegisterNetEvent('weatherSync:changeTime')
-RegisterNetEvent('weatherSync:displayForecast')
+RegisterNetEvent('weatherSync:toggleForecast')
+RegisterNetEvent('weatherSync:updateForecast')
 
 function IsInSnowyRegion(x, y, z)
 	return GetDistanceBetweenCoords(x, y, z, -1361.63, 2393.23, 306.62, false) <= 1400
@@ -103,7 +104,9 @@ local WeatherIcons = {
 	['whiteout']       = '❄️'
 }
 
-AddEventHandler('weatherSync:displayForecast', function(forecast)
+local ForecastIsDisplayed = false
+
+function UpdateForecast(forecast)
 	for i = 1, #forecast do
 		forecast[i].weather = WeatherIcons[TranslateWeatherForRegion(forecast[i].weather)]
 	end
@@ -114,20 +117,38 @@ AddEventHandler('weatherSync:displayForecast', function(forecast)
 	local metric = ShouldUseMetricTemperature();
 	local tempStr = string.format('%d °%s', math.floor(temperature), (metric and 'C' or 'F'))
 
-	SetNuiFocus(true, true)
 	SendNUIMessage({
-		action = 'display',
+		action = 'updateForecast',
 		forecast = json.encode(forecast),
 		temperature = tempStr
 	})
+end
+
+AddEventHandler('weatherSync:toggleForecast', function()
+	ForecastIsDisplayed = not ForecastIsDisplayed
+
+	CreateThread(function()
+		while ForecastIsDisplayed do
+			TriggerServerEvent('weatherSync:requestUpdatedForecast')
+			Wait(1000)
+		end
+	end)
+
+	SendNUIMessage({
+		action = 'toggleForecast'
+	})
 end)
 
-RegisterNUICallback('closeForecast', function()
-	SetNuiFocus(false, false)
+AddEventHandler('weatherSync:updateForecast', function(forecast)
+	UpdateForecast(forecast)
 end)
 
 CreateThread(function()
-	TriggerEvent('chat:addSuggestion', '/forecast', 'Display upcoming weather', {})
+	TriggerEvent('chat:addSuggestion', '/forecast', 'Toggle display of weather forecast', {})
+
+	TriggerEvent('chat:addSuggestion', '/syncdelay', 'Change how often time/weather are synced.', {
+		{name = 'delay', help = 'The time in milliseconds between syncs'}
+	})
 
 	TriggerEvent('chat:addSuggestion', '/time', 'Change the time of day', {
 		{name = 'h', help = 'Hour, 0-23'},
