@@ -1,145 +1,11 @@
-function TimeToHMS(time)
-	local hour = math.floor(time / 60 / 60)
-	local minute = math.floor(time / 60) % 60
-	local second = time % 60
-
-	return hour, minute, second
-end
-
-function HMSToTime(hour, minute, second)
-	return hour * 3600 + minute * 60 + second
-end
-
--- CONFIGURATION
-
--- Default weather when the server starts
-local CurrentWeather = 'sunny'
-
--- Default time when the server starts
-local CurrentTime = HMSToTime(6, 0, 0)
-
--- Default ratio of in-game seconds to real seconds. Standard game time is 30:1, or 1 in-game minute = 2 real seconds
-local CurrentTimescale = 30.0
-
--- The interval between weather changes
-local WeatherInterval = HMSToTime(1, 0, 0)
-
--- Whether time is frozen at server start
-local TimeIsFrozen = false
-
--- Whether weather is frozen at serer start
-local WeatherIsFrozen = false
-
--- Number of weather intervals to queue weather for
-local MaxForecast = 23
-
--- How often in ms to sync with clients
-local SyncDelay = 5000
-
--- The following table describes the weather pattern of the world. For every type of weather that may occur, the types of weather that may follow are given with a number representing the percentage of their likeliness. For example:
---
---     ['sunny'] = {
---         ['sunny'] = 50
---         ['clouds'] = 50
---     }
---
--- means that when the weather is sunny, the next stage is 50% likely to be sunny or 50% likely to be cloudy.
---
--- All the numbers for the next stages must add up to 100.
-local WeatherPattern = {
-	['sunny'] = {
-		['sunny']  = 60,
-		['clouds'] = 40
-	},
-
-	['clouds'] = {
-		['clouds']       = 20,
-		['sunny']        = 35,
-		['misty']        = 15,
-		['fog']          = 15,
-		['overcastdark'] = 15
-	},
-
-	['overcastdark'] = {
-		['overcastdark'] = 5,
-		['clouds']       = 60,
-		['overcast']     = 30,
-		['thunder']      = 5
-	},
-
-	['misty'] = {
-		['misty']  = 25,
-		['clouds'] = 50,
-		['fog']    = 25
-	},
-
-	['fog'] = {
-		['fog']      = 25,
-		['clouds']   = 25,
-		['misty']    = 25,
-		['overcast'] = 25
-	},
-
-	['overcast'] = {
-		['overcast']     = 4,
-		['overcastdark'] = 40,
-		['drizzle']      = 30,
-		['shower']       = 10,
-		['rain']         = 15,
-		['snow']         = 1
-	},
-
-	['drizzle'] = {
-		['drizzle']      = 10,
-		['overcast']     = 10,
-		['rain']         = 10,
-		['shower']       = 10,
-		['overcastdark'] = 30,
-		['clouds']       = 30
-	},
-
-	['rain'] = {
-		['rain']         = 5,
-		['overcastdark'] = 60,
-		['drizzle']      = 25,
-		['shower']       = 5,
-		['thunderstorm'] = 10,
-		['hurricane']    = 5
-	},
-
-	['thunder'] = {
-		['thunder']      = 10,
-		['overcastdark'] = 50,
-		['thunderstorm'] = 40
-	},
-
-	['thunderstorm'] = {
-		['thunderstorm'] = 5,
-		['thunder']      = 35,
-		['rain']         = 30,
-		['drizzle']      = 20,
-		['shower']       = 10
-	},
-
-	['hurricane'] = {
-		['hurricane'] = 5,
-		['rain']      = 40,
-		['drizzle']   = 65
-	},
-
-	['shower'] = {
-		['shower']       = 5,
-		['overcast']     = 10,
-		['overcastdark'] = 85
-	},
-
-	['snow'] = {
-		['snow'] = 1,
-		['overcastdark'] = 98
-	}
-}
-
--- END OF CONFIGURATION
+local CurrentWeather = Config.Weather
+local CurrentTime = Config.Time
+local CurrentTimescale = Config.Timescale
+local WeatherInterval = Config.WeatherInterval
+local TimeIsFrozen = Config.TimeIsFrozen
+local WeatherIsFrozen = Config.WeatherIsFrozen
+local MaxForecast = Config.MaxForecast
+local SyncDelay = Config.SyncDelay
 
 local WeatherTypes = {
 	'blizzard',
@@ -175,10 +41,10 @@ function NextWeather(weather)
 		return weather
 	end
 
-	local choices = WeatherPattern[weather]
+	local choices = Config.WeatherPattern[weather]
 
 	if not choices then
-		choices = WeatherPattern['sunny']
+		choices = Config.WeatherPattern['sunny']
 	end
 
 	local c = 0

@@ -80,35 +80,11 @@ AddEventHandler('weatherSync:changeTime', function(hour, minute, second, transit
 	NetworkOverrideClockTime(hour, minute, second, transitionTime, freezeTime)
 end)
 
-local WeatherIcons = {
-	['blizzard']       = '❄️',
-	['clouds']         = '⛅',
-	['drizzle']        = '🌧️',
-	['fog']            = '🌫️',
-	['groundblizzard'] = '❄️',
-	['hail']           = '🌨️',
-	['highpressure']   = '☀️',
-	['hurricane']      = '🌪️',
-	['misty']          = '🌫️',
-	['overcast']       = '☁️',
-	['overcastdark']   = '☁️',
-	['rain']           = '🌧️',
-	['sandstorm']      = '🌬️',
-	['shower']         = '🌧️',
-	['sleet']          = '🌧️',
-	['snow']           = '🌨️',
-	['snowlight']      = '🌨️',
-	['sunny']          = '☀️',
-	['thunder']        = '🌩️',
-	['thunderstorm']   = '⛈️',
-	['whiteout']       = '❄️'
-}
-
 local ForecastIsDisplayed = false
 
 function UpdateForecast(forecast)
 	for i = 1, #forecast do
-		forecast[i].weather = WeatherIcons[TranslateWeatherForRegion(forecast[i].weather)]
+		forecast[i].weather = Config.WeatherIcons[TranslateWeatherForRegion(forecast[i].weather)]
 	end
 
 	-- Get local temperature

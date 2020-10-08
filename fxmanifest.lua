@@ -11,6 +11,11 @@ files {
 	'ui/CHINESER.TTF'
 }
 
+shared_scripts {
+	'common.lua',
+	'config.lua'
+}
+
 client_scripts {
 	'client.lua'
 }
