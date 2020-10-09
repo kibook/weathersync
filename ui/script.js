@@ -1,14 +1,14 @@
-function toggleDisplay(e) {
-	if (e.style.display == 'block') {
+function toggleDisplay(e, display) {
+	if (e.style.display == display) {
 		e.style.display = 'none';
 	} else {
-		e.style.display = 'block';
+		e.style.display = display;
 	}
 }
 
 function toggleForecast() {
-	toggleDisplay(document.querySelector('#forecast'));
-	toggleDisplay(document.querySelector('#temperature'));
+	toggleDisplay(document.querySelector('#forecast'), 'table');
+	toggleDisplay(document.querySelector('#temperature'), 'block');
 }
 
 function updateForecast(data) {
