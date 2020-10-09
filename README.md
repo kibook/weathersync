@@ -14,9 +14,9 @@
 
 ## Examples
 
-| Forecast UI | Region-specific weather |
-|---|---|
-| [![Forecast UI](https://i.imgur.com/pXPTwnUm.jpg)](https://imgur.com/pXPTwnU) | [![Region-specific weather](https://i.imgur.com/Loif9SMm.jpg)](https://imgur.com/Loif9SM) |
+| Forecast UI | Region-specific weather | Adjustable timescale |
+|---|---|---|
+| [![Forecast UI](https://i.imgur.com/pXPTwnUm.jpg)](https://imgur.com/pXPTwnU) | [![Region-specific weather](https://i.imgur.com/Loif9SMm.jpg)](https://imgur.com/Loif9SM) | [![Adjustable timescale](https://i.imgur.com/WkqHAs4m.jpg)](https://imgur.com/WkqHAs4) |
 
 ## Commands
 
@@ -30,14 +30,15 @@
 
 ## Configuration
 
-| Variable           | Description | Example |
-|--------------------|-----------------------------------------------------|---------------------------------------|
-| `CurrentWeather`   | Initial weather when the resource starts.           | `'sunny'`                             |
-| `CurrentTime`      | Initial time when the resource starts.              | `HMSToTime(6, 0, 0)` (06:00:00)       |
-| `CurrentTimescale` | Initial timescale when the resource starts          | `30.0` (30 in-game secs per real sec) |
-| `WeatherInterval`  | How often the weather changes.                      | `HMSToTime(1, 0, 0)` (1 in-game hour) |
-| `TimeIsFrozen`     | Whether time is frozen when the resource starts.    | `false`                               |
-| `WeatherIsFrozen`  | Whether weather is frozen when the resource starts. | `false`                               |
-| `MaxForecast`      | Number of weather intervals to queue up.            | `23` (24-hour forecast)               |
-| `SyncDelay`        | How often in ms to sync with clients.               | `5000`                                |
-| `WeatherPattern`   | A table describing the the weather pattern.         | See [server.lua](server.lua)          |
+| Variable                 | Description                                         | Example                               |
+|--------------------------|-----------------------------------------------------|---------------------------------------|
+| `Config.Time`            | Initial time when the resource starts.              | `HMSToTime(6, 0, 0)` (06:00:00)       |
+| `Config.Timescale`       | Initial timescale when the resource starts          | `30.0` (30 in-game secs per real sec) |
+| `Config.TimeIsFrozen`    | Whether time is frozen when the resource starts.    | `false`                               |
+| `Config.Weather`         | Initial weather when the resource starts.           | `'sunny'`                             |
+| `Config.WeatherInterval` | How often the weather changes.                      | `HMSToTime(1, 0, 0)` (1 in-game hour) |
+| `Config.WeatherIsFrozen` | Whether weather is frozen when the resource starts. | `false`                               |
+| `Config.MaxForecast`     | Number of weather intervals to queue up.            | `23` (24-hour forecast)               |
+| `Config.SyncDelay`       | How often in ms to sync with clients.               | `5000`                                |
+| `Config.WeatherPattern`  | A table describing the the weather pattern.         | See [config.lua](config.lua)          |
+| `Config.WeatherIcons`    | Icons to use for each weather type in the forecast. | See [config.lua](config.lua)          |
