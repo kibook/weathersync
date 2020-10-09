@@ -157,7 +157,7 @@ function CreateForecast()
 		local time = (TimeIsFrozen and CurrentTime or (CurrentTime + WeatherInterval * i) % 86400)
 		local h, m, s = TimeToHMS(time - time % WeatherInterval)
 		local weather = (i == 0 and CurrentWeather or WeatherForecast[i])
-		table.insert(forecast, {time = string.format('%.2d:%.2d', h, m), weather = weather})
+		table.insert(forecast, {hour = h, min = m, sec = s, weather = weather})
 	end
 
 	return forecast
@@ -171,7 +171,8 @@ RegisterCommand('forecast', function(source, args, raw)
 		PrintMessage(source, {args = {'WEATHER FORECAST'}})
 		PrintMessage(source, {args = {'================'}})
 		for i = 1, #forecast do
-			PrintMessage(source, {args = {forecast[i].time, forecast[i].weather}})
+			local time = string.format('%.2d:%.2d', forecast[i].hour, forecast[i].min)
+			PrintMessage(source, {args = {time, forecast[i].weather}})
 		end
 		PrintMessage(source, {args = {'================'}})
 	end

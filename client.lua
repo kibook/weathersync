@@ -83,15 +83,39 @@ end)
 local ForecastIsDisplayed = false
 
 function UpdateForecast(forecast)
+	local h24 = ShouldUse_24HourClock()
+
 	for i = 1, #forecast do
+		if h24 then
+			forecast[i].time = string.format(
+				'%.2d:%.2d',
+				forecast[i].hour,
+				forecast[i].min)
+		else
+			local h = forecast[i].hour % 12
+			forecast[i].time = string.format(
+				'%d:%.2d %s',
+				h == 0 and 12 or h,
+				forecast[i].min,
+				forecast[i].hour > 12 and 'PM' or 'AM')
+		end
+
 		forecast[i].weather = Config.WeatherIcons[TranslateWeatherForRegion(forecast[i].weather)]
 	end
 
 	-- Get local temperature
 	local x, y, z = table.unpack(GetEntityCoords(PlayerPedId()))
-	local temperature = GetTemperatureAtCoords(x, y, z)
 	local metric = ShouldUseMetricTemperature();
-	local tempStr = string.format('%d °%s', math.floor(temperature), (metric and 'C' or 'F'))
+	local temperature
+	local unit
+	if metric then
+		temperature = math.floor(GetTemperatureAtCoords(x, y, z))
+		unit = 'C'
+	else
+		temperature = math.floor(GetTemperatureAtCoords(x, y, z) * 9/5 + 32)
+		unit = 'F'
+	end
+	local tempStr = string.format('%d °%s', temperature, unit)
 
 	SendNUIMessage({
 		action = 'updateForecast',
