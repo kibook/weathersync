@@ -154,9 +154,16 @@ function CreateForecast()
 	local forecast = {}
 
 	for i = 0, #WeatherForecast do
-		local time = (TimeIsFrozen and CurrentTime or (CurrentTime + WeatherInterval * i) % 86400)
-		local h, m, s = TimeToHMS(time - time % WeatherInterval)
-		local weather = (i == 0 and CurrentWeather or WeatherForecast[i])
+		local h, m, s, weather
+
+		if i == 0 then
+			h, m, s = TimeToHMS(CurrentTime)
+			weather = CurrentWeather
+		else
+			local time = (TimeIsFrozen and CurrentTime or (CurrentTime + WeatherInterval * i) % 86400)
+			h, m, s = TimeToHMS(time - time % WeatherInterval)
+			weather = WeatherForecast[i]
+		end
 		table.insert(forecast, {hour = h, min = m, sec = s, weather = weather})
 	end
 
