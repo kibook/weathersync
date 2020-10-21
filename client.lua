@@ -1,7 +1,9 @@
 local CurrentWeather = ''
+local CurrentWindDirection = 0.0
 
 RegisterNetEvent('weatherSync:changeWeather')
 RegisterNetEvent('weatherSync:changeTime')
+RegisterNetEvent('weatherSync:changeWind')
 RegisterNetEvent('weatherSync:toggleForecast')
 RegisterNetEvent('weatherSync:updateForecast')
 
@@ -80,6 +82,12 @@ AddEventHandler('weatherSync:changeTime', function(hour, minute, second, transit
 	NetworkOverrideClockTime(hour, minute, second, transitionTime, freezeTime)
 end)
 
+AddEventHandler('weatherSync:changeWind', function(direction, speed)
+	SetWindDirection(direction)
+	CurrentWindDirection = direction
+	SetWindSpeed(speed)
+end)
+
 local ForecastIsDisplayed = false
 
 function UpdateForecast(forecast)
@@ -101,26 +109,37 @@ function UpdateForecast(forecast)
 		end
 
 		forecast[i].weather = Config.WeatherIcons[TranslateWeatherForRegion(forecast[i].weather)]
+		forecast[i].wind = GetCardinalDirection(forecast[i].wind)
 	end
 
 	-- Get local temperature
 	local x, y, z = table.unpack(GetEntityCoords(PlayerPedId()))
 	local metric = ShouldUseMetricTemperature();
 	local temperature
-	local unit
+	local temperatureUnit
+	local windSpeed
+	local windSpeedUnit
 	if metric then
 		temperature = math.floor(GetTemperatureAtCoords(x, y, z))
-		unit = 'C'
+		temperatureUnit = 'C'
+
+		windSpeed = math.floor(GetWindSpeed())
+		windSpeedUnit = 'kph'
 	else
 		temperature = math.floor(GetTemperatureAtCoords(x, y, z) * 9/5 + 32)
-		unit = 'F'
+		temperatureUnit = 'F'
+
+		windSpeed = math.floor(GetWindSpeed() * 0.621371)
+		windSpeedUnit = 'mph'
 	end
-	local tempStr = string.format('%d °%s', temperature, unit)
+	local tempStr = string.format('%d °%s', temperature, temperatureUnit)
+	local windStr = string.format('🌬️ %d %s %s', windSpeed, windSpeedUnit, GetCardinalDirection(CurrentWindDirection))
 
 	SendNUIMessage({
 		action = 'updateForecast',
 		forecast = json.encode(forecast),
-		temperature = tempStr
+		temperature = tempStr,
+		wind = windStr
 	})
 end
 
@@ -166,5 +185,11 @@ CreateThread(function()
 		{name = 'type', help = 'The type of weather to change to'},
 		{name = 'transition', help = 'Transition time in seconds'},
 		{name = 'freeze', help = '0 = don\'t freeze weather, 1 = freeze weather'}
+	})
+
+	TriggerEvent('chat:addSuggestion', '/wind', 'Change wind direction and speed', {
+		{name = 'direction', help = 'Direction of the wind in degrees'},
+		{name = 'speed', help = 'Minimum wind speed'},
+		{name = 'freeze', help = '0 don\'t freeze wind, 1 = freeze wind'}
 	})
 end)

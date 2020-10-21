@@ -42,10 +42,30 @@ html, body {
 	vertical-align: middle;
 }
 
+.forecast-wind {
+	display: table-cell;
+	text-align: left;
+	vertical-align: middle;
+	font-size: 50%;
+}
+
 #temperature {
 	display: none;
 	position: absolute;
 	top: 0;
+	left: 50%;
+	transform: translate(-50%, 0);
+	background-color: rgba(0, 0, 0, 0.5);
+	color: white;
+	font-size: 1.7vw;
+	font-family: "Chinese Rocks";
+	padding: 0.5vw;
+}
+
+#wind {
+	display: none;
+	position: absolute;
+	bottom: 0;
 	left: 50%;
 	transform: translate(-50%, 0);
 	background-color: rgba(0, 0, 0, 0.5);

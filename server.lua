@@ -6,6 +6,9 @@ local TimeIsFrozen = Config.TimeIsFrozen
 local WeatherIsFrozen = Config.WeatherIsFrozen
 local MaxForecast = Config.MaxForecast
 local SyncDelay = Config.SyncDelay
+local CurrentWindDirection = Config.WindDirection
+local CurrentWindSpeed = Config.WindSpeed
+local WindIsFrozen = Config.WindIsFrozen
 
 local WeatherTypes = {
 	'blizzard',
@@ -58,14 +61,24 @@ function NextWeather(weather)
 	end
 end
 
+function NextWindDirection(direction)
+	if WindIsFrozen then
+		return direction
+	end
+
+	return ((direction + math.random(0, 45)) % 360) * 1.0
+end
+
 function GenerateForecast()
 	local weather = NextWeather(CurrentWeather)
+	local wind = NextWindDirection(CurrentWindDirection)
 
-	WeatherForecast = {weather}
+	WeatherForecast = {{weather = weather, wind = wind}}
 
 	for i = 2, MaxForecast do
 		weather = NextWeather(weather)
-		WeatherForecast[i] = weather
+		wind = NextWindDirection(wind)
+		WeatherForecast[i] = {weather = weather, wind = wind}
 	end
 end
 
@@ -150,21 +163,39 @@ RegisterCommand('syncdelay', function(source, args, raw)
 	end
 end, true)
 
+function SetWind(direction, speed, frozen)
+	CurrentWindDirection = direction
+	CurrentWindSpeed = speed
+	WindIsFrozen = frozen
+	GenerateForecast()
+end
+
+RegisterCommand('wind', function(source, args, raw)
+	if #args > 0 then
+		local direction = tonumber(args[1]) * 1.0
+		local speed = (args[2] and tonumber(args[2]) * 1.0 or 0.0)
+		local frozen = args[3] == '1'
+		SetWind(direction, speed, frozen)
+	end
+end, true)
+
 function CreateForecast()
 	local forecast = {}
 
 	for i = 0, #WeatherForecast do
-		local h, m, s, weather
+		local h, m, s, weather, wind
 
 		if i == 0 then
 			h, m, s = TimeToHMS(CurrentTime)
 			weather = CurrentWeather
+			wind = CurrentWindDirection
 		else
 			local time = (TimeIsFrozen and CurrentTime or (CurrentTime + WeatherInterval * i) % 86400)
 			h, m, s = TimeToHMS(time - time % WeatherInterval)
-			weather = WeatherForecast[i]
+			weather = WeatherForecast[i].weather
+			wind = WeatherForecast[i].wind
 		end
-		table.insert(forecast, {hour = h, min = m, sec = s, weather = weather})
+		table.insert(forecast, {hour = h, min = m, sec = s, weather = weather, wind = wind})
 	end
 
 	return forecast
@@ -200,6 +231,10 @@ function SyncWeather()
 	TriggerClientEvent('weatherSync:changeWeather', -1, CurrentWeather, WeatherInterval / CurrentTimescale / 4)
 end
 
+function SyncWind()
+	TriggerClientEvent('weatherSync:changeWind', -1, CurrentWindDirection, CurrentWindSpeed)
+end
+
 GenerateForecast()
 
 CreateThread(function()
@@ -214,8 +249,17 @@ CreateThread(function()
 
 		if not WeatherIsFrozen then
 			if WeatherTicks >= WeatherInterval then
-				CurrentWeather = table.remove(WeatherForecast, 1)
-				table.insert(WeatherForecast, NextWeather(WeatherForecast[#WeatherForecast]))
+				local next = table.remove(WeatherForecast, 1)
+				local last = WeatherForecast[#WeatherForecast]
+
+				CurrentWeather = next.weather
+				CurrentWindDirection = next.wind
+
+				table.insert(WeatherForecast, {
+					weather = NextWeather(last.weather),
+					wind = NextWindDirection(last.wind)
+				})
+
 				WeatherTicks = 0
 			else
 				WeatherTicks = WeatherTicks + tick
@@ -224,5 +268,6 @@ CreateThread(function()
 
 		SyncTime(tick)
 		SyncWeather()
+		SyncWind()
 	end
 end)

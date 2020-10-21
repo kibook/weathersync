@@ -21,6 +21,15 @@ Config.WeatherIsFrozen = false
 -- Number of weather intervals to queue up
 Config.MaxForecast = 23
 
+-- Default wind direction when the server starts
+Config.WindDirection = 0.0
+
+-- Default wind speed when the server starts
+Config.WindSpeed = 0.0
+
+-- Whether wind direction is frozen when the server starts
+Config.WindIsFrozen = false
+
 -- How often in milliseconds to sync with clients
 Config.SyncDelay = 5000
 
