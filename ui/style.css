@@ -115,8 +115,14 @@ html, body {
 	font-family: inherit;
 }
 
-.input input[type=number], .input select {
+.input input[type=number], .input input[type=text], .input select {
 	width: 100%;
+}
+
+.input *[readonly] {
+	background: none;
+	border: none;
+	color: white;
 }
 
 .admin-ui-option-group-controls {

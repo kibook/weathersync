@@ -189,6 +189,7 @@ AddEventHandler('weatherSync:updateAdminUi', function(weather, time, timescale, 
 	SendNUIMessage({
 		action = 'updateAdminUi',
 		weatherTypes = json.encode(WeatherTypes),
+		weatherIcons = json.encode(Config.WeatherIcons),
 		weather = weather,
 		hour = h,
 		min = m,

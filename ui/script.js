@@ -57,6 +57,7 @@ function openAdminUi(data) {
 
 function updateAdminUi(data) {
 	var weatherTypes = JSON.parse(data.weatherTypes);
+	var weatherIcons = JSON.parse(data.weatherIcons);
 	var curHour = document.querySelector('#cur-hour');
 	var curMin = document.querySelector('#cur-min');
 	var curSec = document.querySelector('#cur-sec');
@@ -70,21 +71,20 @@ function updateAdminUi(data) {
 	curMin.value = data.min;
 	curSec.value = data.sec;
 	timescale.value = data.timescale;
-	weather.value = data.weather;
+	weather.value = weatherIcons[data.weather] + ' ' + data.weather;
 	windDirection.value = data.windDirection;
 	windSpeed.value = data.windSpeed;
 	syncDelay.value = data.syncDelay;
 
 	var weatherSelect = document.querySelector('#new-weather-type');
-	var value = weatherSelect.value;
-	weatherSelect.innerHTML = '';
-	for (i = 0; i < weatherTypes.length; ++i) {
-		var option = document.createElement('option');
-		option.value = weatherTypes[i];
-		option.innerHTML = weatherTypes[i];
-		weatherSelect.appendChild(option);
+	if (!weatherSelect.querySelector('option')) {
+		for (i = 0; i < weatherTypes.length; ++i) {
+			var option = document.createElement('option');
+			option.value = weatherTypes[i];
+			option.innerHTML = weatherTypes[i];
+			weatherSelect.appendChild(option);
+		}
 	}
-	weatherSelect.value = value;
 }
 
 window.addEventListener('message', function (event) {
