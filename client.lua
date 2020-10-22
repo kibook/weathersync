@@ -6,6 +6,8 @@ RegisterNetEvent('weatherSync:changeTime')
 RegisterNetEvent('weatherSync:changeWind')
 RegisterNetEvent('weatherSync:toggleForecast')
 RegisterNetEvent('weatherSync:updateForecast')
+RegisterNetEvent('weatherSync:openAdminUi')
+RegisterNetEvent('weatherSync:updateAdminUi')
 
 function IsInSnowyRegion(x, y, z)
 	return GetDistanceBetweenCoords(x, y, z, -1361.63, 2393.23, 306.62, false) <= 1400
@@ -162,7 +164,77 @@ AddEventHandler('weatherSync:updateForecast', function(forecast)
 	UpdateForecast(forecast)
 end)
 
+AddEventHandler('weatherSync:openAdminUi', function()
+	AdminUiIsOpen = not AdminUiIsOpen
+	ForecastIsDisplayed = AdminUiIsOpen
+
+	CreateThread(function()
+		while AdminUiIsOpen do
+			TriggerServerEvent('weatherSync:requestUpdatedAdminUi')
+			TriggerServerEvent('weatherSync:requestUpdatedForecast')
+			Wait(1000)
+		end
+	end)
+
+	SetNuiFocus(true, true)
+
+	SendNUIMessage({
+		action = 'openAdminUi'
+	})
+end)
+
+AddEventHandler('weatherSync:updateAdminUi', function(weather, time, timescale, windDirection, windSpeed, syncDelay)
+	local h, m, s = TimeToHMS(time)
+
+	SendNUIMessage({
+		action = 'updateAdminUi',
+		weatherTypes = json.encode(WeatherTypes),
+		weather = weather,
+		hour = h,
+		min = m,
+		sec = s,
+		timescale = timescale,
+		windSpeed = windSpeed,
+		windDirection = windDirection,
+		syncDelay = syncDelay
+	})
+end)
+
+RegisterNUICallback('setTime', function(data, cb)
+	TriggerServerEvent('weatherSync:setTime', data.hour, data.min, data.sec, data.transition, data.freeze)
+	cb({})
+end)
+
+RegisterNUICallback('setTimescale', function(data, cb)
+	TriggerServerEvent('weatherSync:setTimescale', data.timescale * 1.0)
+	cb({})
+end)
+
+RegisterNUICallback('setWeather', function(data, cb)
+	TriggerServerEvent('weatherSync:setWeather', data.weather, data.transition * 1.0, data.freeze)
+	cb({})
+end)
+
+RegisterNUICallback('setWind', function(data, cb)
+	TriggerServerEvent('weatherSync:setWind', data.windDirection * 1.0, data.windSpeed * 1.0, data.freeze)
+	cb({})
+end)
+
+RegisterNUICallback('setSyncDelay', function(data, cb)
+	TriggerServerEvent('weatherSync:setSyncDelay', data.syncDelay)
+	cb({})
+end)
+
+RegisterNUICallback('closeAdminUi', function(data, cb)
+	SetNuiFocus(false, false)
+	cb({})
+end)
+
 CreateThread(function()
+	Wait(0)
+
+	SetNuiFocus(false, false)
+
 	TriggerEvent('chat:addSuggestion', '/forecast', 'Toggle display of weather forecast', {})
 
 	TriggerEvent('chat:addSuggestion', '/syncdelay', 'Change how often time/weather are synced.', {

@@ -48,6 +48,42 @@ function updateForecast(data) {
 	w.innerHTML = data.wind;
 }
 
+function openAdminUi(data) {
+	document.querySelector('#admin-ui').style.display = 'block';
+	document.querySelector('#forecast').style.display = 'table';
+	document.querySelector('#temperature').style.display = 'block';
+	document.querySelector('#wind').style.display = 'block';
+}
+
+function updateAdminUi(data) {
+	var weatherTypes = JSON.parse(data.weatherTypes);
+	var curHour = document.querySelector('#cur-hour');
+	var curMin = document.querySelector('#cur-min');
+	var curSec = document.querySelector('#cur-sec');
+	var timescale = document.querySelector('#cur-timescale');
+	var weather = document.querySelector('#weather-select');
+	var windDirection = document.querySelector('#cur-wind-direction');
+	var windSpeed = document.querySelector('#cur-wind-speed');
+	var syncDelay = document.querySelector('#sync-delay');
+
+	curHour.value = data.hour;
+	curMin.value = data.min;
+	curSec.value = data.sec;
+	timescale.value = data.timescale;
+	windDirection.value = data.windDirection;
+	windSpeed.value = data.windSpeed;
+	syncDelay.value = data.syncDelay;
+
+	weather.innerHTML = '';
+	for (i = 0; i < weatherTypes.length; ++i) {
+		var option = document.createElement('option');
+		option.value = weatherTypes[i];
+		option.innerHTML = weatherTypes[i];
+		weather.appendChild(option);
+	}
+	weather.value = data.weather;
+}
+
 window.addEventListener('message', function (event) {
 	switch (event.data.action) {
 		case 'toggleForecast':
@@ -56,5 +92,114 @@ window.addEventListener('message', function (event) {
 		case 'updateForecast':
 			updateForecast(event.data);
 			break;
+		case 'openAdminUi':
+			openAdminUi();
+			break;
+		case 'updateAdminUi':
+			updateAdminUi(event.data);
+			break;
 	}
+});
+
+window.addEventListener('load', function() {
+	document.querySelector('#apply-time-btn').addEventListener('click', function(event) {
+		var hour = document.querySelector('#new-hour');
+		var min = document.querySelector('#new-min');
+		var sec = document.querySelector('#new-sec');
+		var transition = document.querySelector('#time-transition');
+		var freeze = document.querySelector('#time-freeze');
+
+		fetch('https://' + GetParentResourceName() + '/setTime', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				hour: parseInt(hour.value),
+				min: parseInt(min.value),
+				sec: parseInt(sec.value),
+				transition: parseInt(transition.value),
+				freeze: freeze.checked
+			})
+		});
+	});
+
+	document.querySelector('#apply-timescale-btn').addEventListener('click', function(event) {
+		var timescale = document.querySelector('#new-timescale')
+
+		fetch('https://' + GetParentResourceName() + '/setTimescale', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				timescale: parseFloat(timescale.value)
+			})
+		});
+	});
+
+	document.querySelector('#apply-weather-btn').addEventListener('click', function(event) {
+		var weather = document.querySelector('#weather-select');
+		var transition = document.querySelector('#weather-transition');
+		var freeze = document.querySelector('#weather-freeze');
+
+		fetch('https://' + GetParentResourceName() + '/setWeather', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				weather: weather.value,
+				transition: parseFloat(transition.value),
+				freeze: freeze.checked
+			})
+		});
+	});
+
+	document.querySelector('#apply-wind-btn').addEventListener('click', function(event) {
+		var windDirection = document.querySelector('#new-wind-direction');
+		var windSpeed = document.querySelector('#new-wind-speed');
+		var freeze = document.querySelector('#wind-freeze');
+
+		fetch('https://' + GetParentResourceName() + '/setWind', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				windSpeed: parseFloat(windSpeed.value),
+				windDirection: parseFloat(windDirection.value),
+				freeze: freeze.checked
+			})
+		});
+	});
+
+	document.querySelector('#apply-sync-delay-btn').addEventListener('click', function(event) {
+		var syncDelay = document.querySelector('#sync-delay');
+
+		fetch('https://' + GetParentResourceName() + '/setSyncDelay', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				syncDelay: parseInt(syncDelay.value)
+			})
+		});
+	});
+
+	document.querySelector('#admin-ui-close-btn').addEventListener('click', function(event) {
+		document.querySelector('#admin-ui').style.display = 'none';
+		document.querySelector('#forecast').style.display = 'none';
+		document.querySelector('#temperature').style.display = 'none';
+		document.querySelector('#wind').style.display = 'none';
+
+		fetch('https://' + GetParentResourceName() + '/closeAdminUi', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: "{}"
+		});
+	});
 });

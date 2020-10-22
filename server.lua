@@ -1,6 +1,7 @@
 local CurrentWeather = Config.Weather
 local CurrentTime = Config.Time
 local CurrentTimescale = Config.Timescale
+local WeatherPattern = Config.WeatherPattern
 local WeatherInterval = Config.WeatherInterval
 local TimeIsFrozen = Config.TimeIsFrozen
 local WeatherIsFrozen = Config.WeatherIsFrozen
@@ -10,44 +11,27 @@ local CurrentWindDirection = Config.WindDirection
 local CurrentWindSpeed = Config.WindSpeed
 local WindIsFrozen = Config.WindIsFrozen
 
-local WeatherTypes = {
-	'blizzard',
-	'clouds',
-	'drizzle',
-	'fog',
-	'groundblizzard',
-	'hail',
-	'highpressure',
-	'hurricane',
-	'misty',
-	'overcast',
-	'overcastdark',
-	'rain',
-	'sandstorm',
-	'shower',
-	'sleet',
-	'snow',
-	'snowlight',
-	'sunny',
-	'thunder',
-	'thunderstorm',
-	'whiteout'
-}
-
 local WeatherTicks = 0
 local WeatherForecast = {}
 
 RegisterNetEvent('weatherSync:requestUpdatedForecast')
+RegisterNetEvent('weatherSync:requestUpdatedAdminUi')
+RegisterNetEvent('weatherSync:setTime')
+RegisterNetEvent('weatherSync:setTimescale')
+RegisterNetEvent('weatherSync:setWeather')
+RegisterNetEvent('weatherSync:setWeatherPattern')
+RegisterNetEvent('weatherSync:setWind')
+RegisterNetEvent('weatherSync:setSyncDelay')
 
 function NextWeather(weather)
 	if WeatherIsFrozen then
 		return weather
 	end
 
-	local choices = Config.WeatherPattern[weather]
+	local choices = WeatherPattern[weather]
 
 	if not choices then
-		choices = Config.WeatherPattern['sunny']
+		choices = WeatherPattern['sunny']
 	end
 
 	local c = 0
@@ -118,6 +102,19 @@ RegisterCommand('weather', function(source, args, raw)
 	end
 end, true)
 
+AddEventHandler('weatherSync:setWeather', function(weather, transition, freeze)
+	SetWeather(weather, transition, freeze)
+end)
+
+function SetWeatherPattern(pattern)
+	WeatherPattern = pattern
+	GenerateForecast()
+end
+
+AddEventHandler('weatherSync:setWeatherPattern', function(pattern)
+	SetWeatherPattern(pattern)
+end)
+
 function SetTime(h, m, s, t, f)
 	TriggerClientEvent('weatherSync:changeTime', -1, h, m, s, t, true)
 	CurrentTime = HMSToTime(h, m, s)
@@ -139,6 +136,10 @@ RegisterCommand('time', function(source, args, raw)
 	end
 end, true)
 
+AddEventHandler('weatherSync:setTime', function(h, m, s, t, f)
+	SetTime(h, m, s, t, f)
+end)
+
 function SetTimescale(scale)
 	CurrentTimescale = scale
 end
@@ -151,6 +152,10 @@ RegisterCommand('timescale', function(source, args, raw)
 	end
 end, true)
 
+AddEventHandler('weatherSync:setTimescale', function(scale)
+	SetTimescale(scale)
+end)
+
 function SetSyncDelay(delay)
 	SyncDelay = delay
 end
@@ -162,6 +167,10 @@ RegisterCommand('syncdelay', function(source, args, raw)
 		PrintMessage(source, {color = {255, 255, 128}, args = {'Sync delay', SyncDelay}})
 	end
 end, true)
+
+AddEventHandler('weatherSync:setSyncDelay', function(delay)
+	SetSyncDelay(delay)
+end)
 
 function SetWind(direction, speed, frozen)
 	CurrentWindDirection = direction
@@ -178,6 +187,10 @@ RegisterCommand('wind', function(source, args, raw)
 		SetWind(direction, speed, frozen)
 	end
 end, true)
+
+AddEventHandler('weatherSync:setWind', function(direction, speed, frozen)
+	SetWind(direction, speed, frozen)
+end)
 
 function CreateForecast()
 	local forecast = {}
@@ -220,6 +233,10 @@ AddEventHandler('weatherSync:requestUpdatedForecast', function()
 	TriggerClientEvent('weatherSync:updateForecast', source, CreateForecast())
 end)
 
+AddEventHandler('weatherSync:requestUpdatedAdminUi', function()
+	TriggerClientEvent('weatherSync:updateAdminUi', source, CurrentWeather, CurrentTime, CurrentTimescale, CurrentWindDirection, CurrentWindSpeed, SyncDelay)
+end)
+
 function SyncTime(tick)
 	-- Ensure time doesn't wrap around when transitioning from ~23:59:59 to ~00:00:00
 	local timeTransition = ((86400 - CurrentTime + tick) % 86400 <= tick and 0 or SyncDelay)
@@ -234,6 +251,10 @@ end
 function SyncWind()
 	TriggerClientEvent('weatherSync:changeWind', -1, CurrentWindDirection, CurrentWindSpeed)
 end
+
+RegisterCommand('weatherui', function(source, args, raw)
+	TriggerClientEvent('weatherSync:openAdminUi', source)
+end, true)
 
 GenerateForecast()
 

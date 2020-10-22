@@ -1,3 +1,27 @@
+WeatherTypes = {
+	'blizzard',
+	'clouds',
+	'drizzle',
+	'fog',
+	'groundblizzard',
+	'hail',
+	'highpressure',
+	'hurricane',
+	'misty',
+	'overcast',
+	'overcastdark',
+	'rain',
+	'sandstorm',
+	'shower',
+	'sleet',
+	'snow',
+	'snowlight',
+	'sunny',
+	'thunder',
+	'thunderstorm',
+	'whiteout'
+}
+
 function TimeToHMS(time)
 	local hour = math.floor(time / 60 / 60)
 	local minute = math.floor(time / 60) % 60

@@ -59,7 +59,7 @@ html, body {
 	color: white;
 	font-size: 1.7vw;
 	font-family: "Chinese Rocks";
-	padding: 0.5vw;
+	padding: 0.5vh 0.5vw;
 }
 
 #wind {
@@ -72,5 +72,81 @@ html, body {
 	color: white;
 	font-size: 1.7vw;
 	font-family: "Chinese Rocks";
-	padding: 0.5vw;
+	padding: 0.5vh 0.5vw;
+}
+
+#admin-ui {
+	display: none;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: rgba(0, 0, 0, 0.5);
+	color: white;
+	font-size: 0.75vw;
+	font-family: Arial;
+	padding: 0.5vh 0.5vw;
+}
+
+.admin-ui-option-group {
+	display: block;
+	border: solid 1px white;
+	padding: 0.5vh 0.5vw;
+}
+
+.input-group {
+	display: table;
+	width: 100%;
+}
+
+.labelled-input {
+	display: table-row;
+}
+
+.labelled-input .label, .labelled-input .input {
+	display: table-cell;
+	padding: 0.25vh 0.25vw;
+	font-size: inherit;
+}
+
+.input * {
+	font-size: inherit;
+}
+
+.input input[type=number], .input select {
+	width: 100%;
+}
+
+.admin-ui-option-group-controls {
+	padding: 1vh 0;
+}
+
+.admin-ui-option-group-controls button {
+	font-size: inherit;
+}
+
+.title {
+	display: block;
+	font-size: 1vw;
+}
+
+.time {
+	display: table-row;
+}
+
+.time .label {
+	display: table-cell;
+}
+
+.time input {
+	display: table-cell;
+}
+
+.admin-ui-controls {
+	text-align: center;
+	padding: 1vh 1vw;
+}
+
+.admin-ui-controls button {
+	font-size: inherit;
 }
