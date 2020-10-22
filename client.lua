@@ -165,8 +165,8 @@ AddEventHandler('weatherSync:updateForecast', function(forecast)
 end)
 
 AddEventHandler('weatherSync:openAdminUi', function()
-	AdminUiIsOpen = not AdminUiIsOpen
-	ForecastIsDisplayed = AdminUiIsOpen
+	AdminUiIsOpen = true
+	ForecastIsDisplayed = true
 
 	CreateThread(function()
 		while AdminUiIsOpen do
@@ -227,6 +227,8 @@ end)
 
 RegisterNUICallback('closeAdminUi', function(data, cb)
 	SetNuiFocus(false, false)
+	AdminUiIsOpen = false
+	ForecastIsDisplayed = false
 	cb({})
 end)
 
@@ -258,6 +260,8 @@ CreateThread(function()
 		{name = 'transition', help = 'Transition time in seconds'},
 		{name = 'freeze', help = '0 = don\'t freeze weather, 1 = freeze weather'}
 	})
+
+	TriggerEvent('chat:addSuggestion', '/weatherui', 'Open weather admin UI', {})
 
 	TriggerEvent('chat:addSuggestion', '/wind', 'Change wind direction and speed', {
 		{name = 'direction', help = 'Direction of the wind in degrees'},

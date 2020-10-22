@@ -61,7 +61,7 @@ function updateAdminUi(data) {
 	var curMin = document.querySelector('#cur-min');
 	var curSec = document.querySelector('#cur-sec');
 	var timescale = document.querySelector('#cur-timescale');
-	var weather = document.querySelector('#weather-select');
+	var weather = document.querySelector('#cur-weather-type');
 	var windDirection = document.querySelector('#cur-wind-direction');
 	var windSpeed = document.querySelector('#cur-wind-speed');
 	var syncDelay = document.querySelector('#sync-delay');
@@ -70,18 +70,21 @@ function updateAdminUi(data) {
 	curMin.value = data.min;
 	curSec.value = data.sec;
 	timescale.value = data.timescale;
+	weather.value = data.weather;
 	windDirection.value = data.windDirection;
 	windSpeed.value = data.windSpeed;
 	syncDelay.value = data.syncDelay;
 
-	weather.innerHTML = '';
+	var weatherSelect = document.querySelector('#new-weather-type');
+	var value = weatherSelect.value;
+	weatherSelect.innerHTML = '';
 	for (i = 0; i < weatherTypes.length; ++i) {
 		var option = document.createElement('option');
 		option.value = weatherTypes[i];
 		option.innerHTML = weatherTypes[i];
-		weather.appendChild(option);
+		weatherSelect.appendChild(option);
 	}
-	weather.value = data.weather;
+	weatherSelect.value = value;
 }
 
 window.addEventListener('message', function (event) {
@@ -139,7 +142,7 @@ window.addEventListener('load', function() {
 	});
 
 	document.querySelector('#apply-weather-btn').addEventListener('click', function(event) {
-		var weather = document.querySelector('#weather-select');
+		var weather = document.querySelector('#new-weather-type');
 		var transition = document.querySelector('#weather-transition');
 		var freeze = document.querySelector('#weather-freeze');
 

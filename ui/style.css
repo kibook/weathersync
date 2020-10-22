@@ -84,13 +84,14 @@ html, body {
 	background-color: rgba(0, 0, 0, 0.5);
 	color: white;
 	font-size: 0.75vw;
-	font-family: Arial;
+	font-family: "Chinese Rocks";
 	padding: 0.5vh 0.5vw;
 }
 
 .admin-ui-option-group {
 	display: block;
-	border: solid 1px white;
+	border-bottom: solid 1px white;
+	border-collapse: collapse;
 	padding: 0.5vh 0.5vw;
 }
 
@@ -111,6 +112,7 @@ html, body {
 
 .input * {
 	font-size: inherit;
+	font-family: inherit;
 }
 
 .input input[type=number], .input select {
@@ -121,11 +123,27 @@ html, body {
 	padding: 1vh 0;
 }
 
-.admin-ui-option-group-controls button {
+button {
 	font-size: inherit;
+	color: white;
+	background-color: rgba(0, 0, 0, 0.5);
+	border: solid 1px white;
+	padding: 0.3vh 0.3vw;
+	font-family: inherit;
+	outline: none;
 }
 
-.title {
+button:hover, button:focus {
+	background-color: rgba(255, 0, 0, 0.5);
+	color: white;
+}
+
+button:active {
+	background-color: rgba(255, 255, 255, 1.0);
+	color: black;
+}
+
+.admin-ui-option-group .title {
 	display: block;
 	font-size: 1vw;
 }
@@ -145,8 +163,4 @@ html, body {
 .admin-ui-controls {
 	text-align: center;
 	padding: 1vh 1vw;
-}
-
-.admin-ui-controls button {
-	font-size: inherit;
 }
