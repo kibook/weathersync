@@ -166,12 +166,10 @@ end)
 
 AddEventHandler('weatherSync:openAdminUi', function()
 	AdminUiIsOpen = true
-	ForecastIsDisplayed = true
 
 	CreateThread(function()
 		while AdminUiIsOpen do
 			TriggerServerEvent('weatherSync:requestUpdatedAdminUi')
-			TriggerServerEvent('weatherSync:requestUpdatedForecast')
 			Wait(1000)
 		end
 	end)
@@ -229,7 +227,6 @@ end)
 RegisterNUICallback('closeAdminUi', function(data, cb)
 	SetNuiFocus(false, false)
 	AdminUiIsOpen = false
-	ForecastIsDisplayed = false
 	cb({})
 end)
 

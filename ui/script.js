@@ -50,9 +50,6 @@ function updateForecast(data) {
 
 function openAdminUi(data) {
 	document.querySelector('#admin-ui').style.display = 'block';
-	document.querySelector('#forecast').style.display = 'table';
-	document.querySelector('#temperature').style.display = 'block';
-	document.querySelector('#wind').style.display = 'block';
 }
 
 function updateAdminUi(data) {
@@ -193,9 +190,6 @@ window.addEventListener('load', function() {
 
 	document.querySelector('#admin-ui-close-btn').addEventListener('click', function(event) {
 		document.querySelector('#admin-ui').style.display = 'none';
-		document.querySelector('#forecast').style.display = 'none';
-		document.querySelector('#temperature').style.display = 'none';
-		document.querySelector('#wind').style.display = 'none';
 
 		fetch('https://' + GetParentResourceName() + '/closeAdminUi', {
 			method: 'POST',
