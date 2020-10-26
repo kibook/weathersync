@@ -14,9 +14,9 @@
 
 ## Examples
 
-| Forecast UI | Region-specific weather | Adjustable timescale |
+| Forecast and admin UI | Region-specific weather | Adjustable timescale |
 |---|---|---|
-| [![Forecast UI](https://i.imgur.com/pXPTwnUm.jpg)](https://imgur.com/pXPTwnU) | [![Region-specific weather](https://i.imgur.com/Loif9SMm.jpg)](https://imgur.com/Loif9SM) | [![Adjustable timescale](https://i.imgur.com/WkqHAs4m.jpg)](https://imgur.com/WkqHAs4) |
+| [![Forecast and admin UI](https://i.imgur.com/Scn0z0Em.jpg)](https://imgur.com/Scn0z0E) | [![Region-specific weather](https://i.imgur.com/Loif9SMm.jpg)](https://imgur.com/Loif9SM) | [![Adjustable timescale](https://i.imgur.com/WkqHAs4m.jpg)](https://imgur.com/WkqHAs4) |
 
 ## Commands
 
