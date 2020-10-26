@@ -31,7 +31,7 @@ function NextWeather(weather)
 	local choices = WeatherPattern[weather]
 
 	if not choices then
-		choices = WeatherPattern['sunny']
+		return weather
 	end
 
 	local c = 0
@@ -43,6 +43,8 @@ function NextWeather(weather)
 			return weatherType
 		end
 	end
+
+	return weather
 end
 
 function NextWindDirection(direction)
