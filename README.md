@@ -27,6 +27,8 @@
 | `/time`      | Set the server time.                                      |
 | `/timescale` | Set the ratio of in-game seconds to real-time seconds.    |
 | `/weather`   | Set the server weather.                                   |
+| `/weatherui` | Opens the admin UI for changing the time/weather/wind.    |
+| `/wind`      | Set the wind direction and base speed.                    |
 
 ## Configuration
 
@@ -39,6 +41,9 @@
 | `Config.WeatherInterval` | How often the weather changes.                      | `HMSToTime(1, 0, 0)` (1 in-game hour) |
 | `Config.WeatherIsFrozen` | Whether weather is frozen when the resource starts. | `false`                               |
 | `Config.MaxForecast`     | Number of weather intervals to queue up.            | `23` (24-hour forecast)               |
+| `Config.WindDirection`   | Initial wind direction when the resource starts.    | `0.0` (North)                         |
+| `Config.WindSpeed`       | Initial base wind speed when the resource starts.   | `0.0`                                 |
+| `Config.WindIsFrozen`    | Whether wind direction/speed are frozen.            | `false`                               |
 | `Config.SyncDelay`       | How often in ms to sync with clients.               | `5000`                                |
 | `Config.WeatherPattern`  | A table describing the the weather pattern.         | See [config.lua](config.lua)          |
 | `Config.WeatherIcons`    | Icons to use for each weather type in the forecast. | See [config.lua](config.lua)          |
