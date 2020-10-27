@@ -58,6 +58,10 @@ function TranslateWeatherForRegion(weather)
 		if IsInSnowyRegion(x, y, z) then
 			return 'snowlight'
 		end
+	elseif weather == 'snow' then
+		if IsInDesertRegion(x, y, z) then
+			return 'sunny'
+		end
 	end
 
 	return weather

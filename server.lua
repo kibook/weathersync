@@ -108,7 +108,43 @@ AddEventHandler('weatherSync:setWeather', function(weather, transition, freeze)
 	SetWeather(weather, transition, freeze)
 end)
 
+local LogColors = {
+	['name'] = '\x1B[32m',
+	['default'] = '\x1B[0m',
+	['error'] = '\x1B[31m',
+	['success'] = '\x1B[32m'
+}
+
+function Log(label, message)
+	local color = LogColors[label]
+
+	if not color then
+		color = LogColors.default
+	end
+
+	print(string.format('%s[WeatherSync] %s[%s]%s %s', LogColors.name, color, label, LogColors.default, message))
+end
+
+function ValidateWeatherPattern(pattern)
+	for weather, choices in pairs(pattern) do
+		if not pattern[weather] then
+			Log('error', weather .. ' is missing from the weather pattern table')
+		end
+
+		local sum = 0
+
+		for nextWeather, chance in pairs(choices) do
+			sum = sum + chance
+		end
+
+		if sum ~= 100 then
+			Log('error', weather .. ' next stages do not add up to 100')
+		end
+	end
+end
+
 function SetWeatherPattern(pattern)
+	ValidateWeatherPattern(pattern)
 	WeatherPattern = pattern
 	GenerateForecast()
 end
@@ -257,6 +293,8 @@ end
 RegisterCommand('weatherui', function(source, args, raw)
 	TriggerClientEvent('weatherSync:openAdminUi', source)
 end, true)
+
+ValidateWeatherPattern(WeatherPattern)
 
 GenerateForecast()
 
