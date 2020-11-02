@@ -97,6 +97,10 @@ RegisterCommand('weather', function(source, args, raw)
 	local transition = (args[2] and tonumber(args[2]) or 10.0)
 	local freeze = args[3] == '1'
 
+	if transition <= 0.0 then
+		transition = 0.1
+	end
+
 	if Contains(WeatherTypes, weather) then
 		SetWeather(weather, transition * 1.0, freeze)
 	else
