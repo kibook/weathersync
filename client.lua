@@ -17,46 +17,55 @@ function IsInDesertRegion(x, y, z)
 	return x <= -2050 and y <= -2200
 end
 
+function IsInNorthernRegion(x, y, z)
+	return y >= 1050
+end
+
 function TranslateWeatherForRegion(weather)
 	local x, y, z = table.unpack(GetEntityCoords(PlayerPedId()))
+	local temp = GetTemperatureAtCoords(x, y, z)
 
 	if weather == 'rain' then
-		if IsInSnowyRegion(x, y, z) then
+		if IsInSnowyRegion(x, y, z, temp) then
+			return 'snow', true
+		elseif IsInNorthernRegion(x, y, z) and temp < 0.0 then
 			return 'snow'
 		elseif IsInDesertRegion(x, y, z) then
 			return 'thunder'
 		end
 	elseif weather == 'thunderstorm' then
 		if IsInSnowyRegion(x, y, z) then
-			return 'blizzard'
+			return 'blizzard', true
 		elseif IsInDesertRegion(x, y, z) then
 			return 'rain'
 		end
 	elseif weather == 'hurricane' then
 		if IsInSnowyRegion(x, y, z) then
-			return 'whiteout'
+			return 'whiteout', true
 		elseif IsInDesertRegion(x, y, z) then
 			return 'sandstorm'
 		end
 	elseif weather == 'drizzle' then
 		if IsInSnowyRegion(x, y, z) then
+			return 'snowlight', true
+		elseif IsInNorthernRegion(x, y, z) and temp < 0.0 then
 			return 'snowlight'
 		elseif IsInDesertRegion(x, y, z) then
 			return 'sunny'
 		end
 	elseif weather == 'shower' then
 		if IsInSnowyRegion(x, y, z) then
-			return 'groundblizzard'
+			return 'groundblizzard', true
 		elseif IsInDesertRegion(x, y, z) then
 			return 'sunny'
 		end
 	elseif weather == 'fog' then
 		if IsInSnowyRegion(x, y, z) then
-			return 'snowlight'
+			return 'snowlight', true
 		end
 	elseif weather == 'misty' then
 		if IsInSnowyRegion(x, y, z) then
-			return 'snowlight'
+			return 'snowlight', true
 		end
 	elseif weather == 'snow' then
 		if IsInDesertRegion(x, y, z) then
@@ -71,12 +80,31 @@ function SetWeatherType(weatherHash, p1, p2, overrideNetwork, transitionTime, p5
 	Citizen.InvokeNative(0x59174F1AFE095B5A, weatherHash, true, false, true, transitionTime, false)
 end
 
+function SetSnowCoverageType(type)
+	return Citizen.InvokeNative(0xF02A9C330BBFC5C7, type)
+end
+
+function IsSnowyWeather(weather)
+	return weather == 'blizzard' or weather == 'groundblizzard' or weather == 'snow' or weather == 'whiteout'
+end
+
 AddEventHandler('weatherSync:changeWeather', function(weather, transitionTime)
-	local translatedWeather = TranslateWeatherForRegion(weather)
+	local translatedWeather, inSnowyRegion = TranslateWeatherForRegion(weather)
 
 	if translatedWeather ~= CurrentWeather then
 		SetWeatherType(GetHashKey(translatedWeather), true, false, true, transitionTime, false)
 		CurrentWeather = translatedWeather
+
+		if not inSnowyRegion then
+			CreateThread(function()
+				Wait(math.floor(transitionTime * 1500))
+				if IsSnowyWeather(translatedWeather) then
+					SetSnowCoverageType(2)
+				else
+					SetSnowCoverageType(0)
+				end
+			end)
+		end
 	end
 end)
 
