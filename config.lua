@@ -50,10 +50,10 @@ Config.WeatherPattern = {
 	},
 
 	['clouds'] = {
-		['clouds']       = 20,
-		['sunny']        = 35,
-		['misty']        = 15,
-		['fog']          = 15,
+		['clouds']       = 25,
+		['sunny']        = 40,
+		['misty']        = 10,
+		['fog']          = 10,
 		['overcastdark'] = 15
 	},
 
