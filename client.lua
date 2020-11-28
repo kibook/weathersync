@@ -1,5 +1,6 @@
-local CurrentWeather = ''
+local CurrentWeather = nil
 local CurrentWindDirection = 0.0
+local SnowOnGround = false
 
 RegisterNetEvent('weatherSync:changeWeather')
 RegisterNetEvent('weatherSync:changeTime')
@@ -21,12 +22,16 @@ function IsInNorthernRegion(x, y, z)
 	return y >= 1050
 end
 
+function IsInGuarma(x, y, z)
+	return x >= 0 and y <= -4096
+end
+
 function TranslateWeatherForRegion(weather)
 	local x, y, z = table.unpack(GetEntityCoords(PlayerPedId()))
 	local temp = GetTemperatureAtCoords(x, y, z)
 
 	if weather == 'rain' then
-		if IsInSnowyRegion(x, y, z, temp) then
+		if IsInSnowyRegion(x, y, z) then
 			return 'snow', true
 		elseif IsInNorthernRegion(x, y, z) and temp < 0.0 then
 			return 'snow'
@@ -68,12 +73,20 @@ function TranslateWeatherForRegion(weather)
 			return 'snowlight', true
 		end
 	elseif weather == 'snow' then
-		if IsInDesertRegion(x, y, z) then
+		if IsInGuarma(x, y, z) then
+			return 'sunny'
+		end
+	elseif weather == 'snowlight' then
+		if IsInGuarma(x, y, z) then
+			return 'sunny'
+		end
+	elseif weather == 'blizzard' then
+		if IsInGuarma(x, y, z) then
 			return 'sunny'
 		end
 	end
 
-	return weather
+	return weather, IsInSnowyRegion(x, y, z)
 end
 
 function SetWeatherType(weatherHash, p1, p2, overrideNetwork, transitionTime, p5)
@@ -85,26 +98,35 @@ function SetSnowCoverageType(type)
 end
 
 function IsSnowyWeather(weather)
-	return weather == 'blizzard' or weather == 'groundblizzard' or weather == 'snow' or weather == 'whiteout'
+	return weather == 'blizzard' or weather == 'groundblizzard' or weather == 'snow' or weather == 'whiteout' or weather == 'snowlight'
 end
 
 AddEventHandler('weatherSync:changeWeather', function(weather, transitionTime)
 	local translatedWeather, inSnowyRegion = TranslateWeatherForRegion(weather)
 
-	if translatedWeather ~= CurrentWeather then
-		SetWeatherType(GetHashKey(translatedWeather), true, false, true, transitionTime, false)
-		CurrentWeather = translatedWeather
-
-		if not inSnowyRegion then
-			CreateThread(function()
-				Wait(math.floor(transitionTime * 1500))
-				if IsSnowyWeather(translatedWeather) then
-					SetSnowCoverageType(2)
-				else
+	if not inSnowyRegion and IsSnowyWeather(translatedWeather) then
+		if not SnowOnGround then
+			SnowOnGround = true
+			Citizen.SetTimeout(math.floor(transitionTime * 1500), function()
+				if SnowOnGround then
+					SetSnowCoverageType(3)
+				end
+			end)
+		end
+	else
+		if SnowOnGround then
+			SnowOnGround = false
+			Citizen.SetTimeout(math.floor(transitionTime * 1500), function()
+				if not SnowOnGround then
 					SetSnowCoverageType(0)
 				end
 			end)
 		end
+	end
+
+	if translatedWeather ~= CurrentWeather then
+		SetWeatherType(GetHashKey(translatedWeather), true, false, true, transitionTime, false)
+		CurrentWeather = translatedWeather
 	end
 end)
 
@@ -264,6 +286,8 @@ end)
 
 CreateThread(function()
 	Wait(0)
+
+	SetSnowCoverageType(0)
 
 	SetNuiFocus(false, false)
 

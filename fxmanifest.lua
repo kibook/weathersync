@@ -26,8 +26,15 @@ server_scripts {
 
 server_exports {
 	'SetTime',
+	'ResetTime',
 	'SetTimescale',
+	'ResetTimescale',
 	'SetWeather',
+	'ResetWeather',
 	'SetWeatherPattern',
-	'SetWind'
+	'ResetWeatherPattern',
+	'SetWind',
+	'ResetWind',
+	'SetSyncDelay',
+	'ResetSyncDelay'
 }

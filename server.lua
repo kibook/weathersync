@@ -17,11 +17,17 @@ local WeatherForecast = {}
 RegisterNetEvent('weatherSync:requestUpdatedForecast')
 RegisterNetEvent('weatherSync:requestUpdatedAdminUi')
 RegisterNetEvent('weatherSync:setTime')
+RegisterNetEvent('weatherSync:resetTime')
 RegisterNetEvent('weatherSync:setTimescale')
+RegisterNetEvent('weatherSync:resetTimescale')
 RegisterNetEvent('weatherSync:setWeather')
+RegisterNetEvent('weatherSync:resetWeather')
 RegisterNetEvent('weatherSync:setWeatherPattern')
+RegisterNetEvent('weatherSync:resetWeatherPattern')
 RegisterNetEvent('weatherSync:setWind')
+RegisterNetEvent('weatherSync:resetWind')
 RegisterNetEvent('weatherSync:setSyncDelay')
+RegisterNetEvent('weatherSync:resetSyncDelay')
 
 function NextWeather(weather)
 	if WeatherIsFrozen then
@@ -112,6 +118,14 @@ AddEventHandler('weatherSync:setWeather', function(weather, transition, freeze)
 	SetWeather(weather, transition, freeze)
 end)
 
+function ResetWeather()
+	CurrentWeather = Config.Weather
+	WeatherIsFrozen = Config.WeatherIsFrozen
+	GenerateForecast()
+end
+
+AddEventHandler('weatherSync:resetWeather', ResetWeather)
+
 local LogColors = {
 	['name'] = '\x1B[32m',
 	['default'] = '\x1B[0m',
@@ -157,6 +171,13 @@ AddEventHandler('weatherSync:setWeatherPattern', function(pattern)
 	SetWeatherPattern(pattern)
 end)
 
+function ResetWeatherPattern()
+	WeatherPattern = Config.WeatherPattern
+	GenerateForecast()
+end
+
+AddEventHandler('weatherSync:resetWeatherPattern', ResetWeatherPattern)
+
 function SetTime(h, m, s, t, f)
 	TriggerClientEvent('weatherSync:changeTime', -1, h, m, s, t, true)
 	CurrentTime = HMSToTime(h, m, s)
@@ -182,6 +203,13 @@ AddEventHandler('weatherSync:setTime', function(h, m, s, t, f)
 	SetTime(h, m, s, t, f)
 end)
 
+function ResetTime()
+	CurrentTime = Config.Time
+	TimeIsFrozen = Config.TimeIsFrozen
+end
+
+AddEventHandler('weatherSync:resetTime', ResetTime())
+
 function SetTimescale(scale)
 	CurrentTimescale = scale
 end
@@ -198,6 +226,12 @@ AddEventHandler('weatherSync:setTimescale', function(scale)
 	SetTimescale(scale)
 end)
 
+function ResetTimescale()
+	CurrentTimescale = Config.Timescale
+end
+
+AddEventHandler('weatherSync:resetTimescale', ResetTimescale)
+
 function SetSyncDelay(delay)
 	SyncDelay = delay
 end
@@ -213,6 +247,12 @@ end, true)
 AddEventHandler('weatherSync:setSyncDelay', function(delay)
 	SetSyncDelay(delay)
 end)
+
+function ResetSyncDelay()
+	SyncDelay = Config.SyncDelay
+end
+
+AddEventHandler('weatherSync:resetSyncDelay', ResetSyncDelay)
 
 function SetWind(direction, speed, frozen)
 	CurrentWindDirection = direction
@@ -233,6 +273,15 @@ end, true)
 AddEventHandler('weatherSync:setWind', function(direction, speed, frozen)
 	SetWind(direction, speed, frozen)
 end)
+
+function ResetWind()
+	CurrentWindDirection = Config.WindDirection
+	CurrentWindSpeed = Config.WindSpeed
+	WindIsFrozen = Config.WindIsFrozen
+	GenerateForecast()
+end
+
+AddEventHandler('weatherSync:resetWind', ResetWind)
 
 function CreateForecast()
 	local forecast = {}
