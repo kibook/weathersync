@@ -104,6 +104,10 @@ end
 AddEventHandler('weatherSync:changeWeather', function(weather, transitionTime)
 	local translatedWeather, inSnowyRegion = TranslateWeatherForRegion(weather)
 
+	if not CurrentWeather then
+		transitionTime = 1.0
+	end
+
 	if not inSnowyRegion and IsSnowyWeather(translatedWeather) then
 		if not SnowOnGround then
 			SnowOnGround = true
