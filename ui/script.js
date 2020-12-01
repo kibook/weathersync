@@ -142,6 +142,7 @@ window.addEventListener('load', function() {
 		var weather = document.querySelector('#new-weather-type');
 		var transition = document.querySelector('#weather-transition');
 		var freeze = document.querySelector('#weather-freeze');
+		var permanentSnow = document.querySelector('#weather-permanent-snow');
 
 		fetch('https://' + GetParentResourceName() + '/setWeather', {
 			method: 'POST',
@@ -151,7 +152,8 @@ window.addEventListener('load', function() {
 			body: JSON.stringify({
 				weather: weather.value,
 				transition: parseFloat(transition.value),
-				freeze: freeze.checked
+				freeze: freeze.checked,
+				permanentSnow: permanentSnow.checked
 			})
 		});
 	});

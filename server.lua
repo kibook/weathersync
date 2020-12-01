@@ -10,6 +10,7 @@ local SyncDelay = Config.SyncDelay
 local CurrentWindDirection = Config.WindDirection
 local CurrentWindSpeed = Config.WindSpeed
 local WindIsFrozen = Config.WindIsFrozen
+local PermanentSnow = Config.PermanentSnow
 
 local WeatherTicks = 0
 local WeatherForecast = {}
@@ -91,10 +92,11 @@ function PrintMessage(target, message)
 	end
 end
 
-function SetWeather(weather, transition, freeze)
-	TriggerClientEvent('weatherSync:changeWeather', -1, weather, transition)
+function SetWeather(weather, transition, freeze, permanentSnow)
+	TriggerClientEvent('weatherSync:changeWeather', -1, weather, transition, permanentSnow)
 	CurrentWeather = weather
 	WeatherIsFrozen = freeze
+	PermanentSnow = permanentSnow
 	GenerateForecast()
 end
 
@@ -102,25 +104,27 @@ RegisterCommand('weather', function(source, args, raw)
 	local weather = (args[1] and args[1] or CurrentWeather)
 	local transition = (args[2] and tonumber(args[2]) or 10.0)
 	local freeze = args[3] == '1'
+	local permanentSnow = args[4] == '1'
 
 	if transition <= 0.0 then
 		transition = 0.1
 	end
 
 	if Contains(WeatherTypes, weather) then
-		SetWeather(weather, transition * 1.0, freeze)
+		SetWeather(weather, transition * 1.0, freeze, permanentSnow)
 	else
 		PrintMessage(source, {color = {255, 0, 0}, args = {'Error', 'Unknown weather type: ' .. weather}})
 	end
 end, true)
 
-AddEventHandler('weatherSync:setWeather', function(weather, transition, freeze)
-	SetWeather(weather, transition, freeze)
+AddEventHandler('weatherSync:setWeather', function(weather, transition, freeze, permanentSnow)
+	SetWeather(weather, transition, freeze, permanentSnow)
 end)
 
 function ResetWeather()
 	CurrentWeather = Config.Weather
 	WeatherIsFrozen = Config.WeatherIsFrozen
+	PermanentSnow = Config.PermanentSnow
 	GenerateForecast()
 end
 
@@ -336,7 +340,7 @@ function SyncTime(tick)
 end
 
 function SyncWeather()
-	TriggerClientEvent('weatherSync:changeWeather', -1, CurrentWeather, WeatherInterval / CurrentTimescale / 4)
+	TriggerClientEvent('weatherSync:changeWeather', -1, CurrentWeather, WeatherInterval / CurrentTimescale / 4, PermanentSnow)
 end
 
 function SyncWind()

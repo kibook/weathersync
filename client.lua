@@ -101,14 +101,14 @@ function IsSnowyWeather(weather)
 	return weather == 'blizzard' or weather == 'groundblizzard' or weather == 'snow' or weather == 'whiteout' or weather == 'snowlight'
 end
 
-AddEventHandler('weatherSync:changeWeather', function(weather, transitionTime)
+AddEventHandler('weatherSync:changeWeather', function(weather, transitionTime, permanentSnow)
 	local translatedWeather, inSnowyRegion = TranslateWeatherForRegion(weather)
 
 	if not CurrentWeather then
 		transitionTime = 1.0
 	end
 
-	if not inSnowyRegion and IsSnowyWeather(translatedWeather) then
+	if not inSnowyRegion and (permanentSnow or IsSnowyWeather(translatedWeather)) then
 		if not SnowOnGround then
 			SnowOnGround = true
 			Citizen.SetTimeout(math.floor(transitionTime * 1500), function()
@@ -268,7 +268,7 @@ RegisterNUICallback('setTimescale', function(data, cb)
 end)
 
 RegisterNUICallback('setWeather', function(data, cb)
-	TriggerServerEvent('weatherSync:setWeather', data.weather, data.transition * 1.0, data.freeze)
+	TriggerServerEvent('weatherSync:setWeather', data.weather, data.transition * 1.0, data.freeze, data.permanentSnow)
 	cb({})
 end)
 
@@ -316,7 +316,8 @@ CreateThread(function()
 	TriggerEvent('chat:addSuggestion', '/weather', 'Change the weather', {
 		{name = 'type', help = 'The type of weather to change to'},
 		{name = 'transition', help = 'Transition time in seconds'},
-		{name = 'freeze', help = '0 = don\'t freeze weather, 1 = freeze weather'}
+		{name = 'freeze', help = '0 = don\'t freeze weather, 1 = freeze weather'},
+		{name = 'snow', help = '0 = temporary snow coverage, 1 = permanent snow coverage'}
 	})
 
 	TriggerEvent('chat:addSuggestion', '/weatherui', 'Open weather admin UI', {})

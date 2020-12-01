@@ -18,6 +18,9 @@ Config.WeatherInterval = HMSToTime(1, 0, 0)
 -- Whether weather is frozen at server start
 Config.WeatherIsFrozen = false
 
+-- Whether to permanently add snow on the ground, or only during snowy weather
+Config.PermanentSnow = false
+
 -- Number of weather intervals to queue up
 Config.MaxForecast = 23
 
