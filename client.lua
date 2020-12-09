@@ -11,7 +11,7 @@ RegisterNetEvent('weatherSync:openAdminUi')
 RegisterNetEvent('weatherSync:updateAdminUi')
 
 function IsInSnowyRegion(x, y, z)
-	return GetDistanceBetweenCoords(x, y, z, -1361.63, 2393.23, 306.62, false) <= 1400
+	return x <= -700.0 and y >= 1090.0
 end
 
 function IsInDesertRegion(x, y, z)
