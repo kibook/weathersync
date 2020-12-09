@@ -23,18 +23,3 @@ client_scripts {
 server_scripts {
 	'server.lua'
 }
-
-server_exports {
-	'SetTime',
-	'ResetTime',
-	'SetTimescale',
-	'ResetTimescale',
-	'SetWeather',
-	'ResetWeather',
-	'SetWeatherPattern',
-	'ResetWeatherPattern',
-	'SetWind',
-	'ResetWind',
-	'SetSyncDelay',
-	'ResetSyncDelay'
-}
