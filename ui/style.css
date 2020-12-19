@@ -75,6 +75,16 @@ html, body {
 	padding: 0.5vh 0.5vw;
 }
 
+#sync {
+	display: none;
+	position: absolute;
+	bottom: 1%;
+	left: 1%;
+	color: white;
+	font-size: 2vh;
+	font-family: "Chinese Rocks";
+}
+
 #admin-ui {
 	display: none;
 	position: absolute;

@@ -12,6 +12,8 @@
 
 - Adjustable timescale
 
+- Players can temporarily disable sync and set local time/weather
+
 ## Examples
 
 | Forecast and admin UI | Region-specific weather | Adjustable timescale |
@@ -20,15 +22,18 @@
 
 ## Commands
 
-| Command      | Description                                               |
-|--------------|-----------------------------------------------------------|
-| `/forecast`  | Displays a forecast of upcoming weather.                  |
-| `/syncdelay` | Set how often the server syncs with clients.              |
-| `/time`      | Set the server time.                                      |
-| `/timescale` | Set the ratio of in-game seconds to real-time seconds.    |
-| `/weather`   | Set the server weather.                                   |
-| `/weatherui` | Opens the admin UI for changing the time/weather/wind.    |
-| `/wind`      | Set the wind direction and base speed.                    |
+| Command        | Description                                               |
+|----------------|-----------------------------------------------------------|
+| `/forecast`    | Displays a forecast of upcoming weather.                  |
+| `/mytime`      | Set local time (if sync is off).                          |
+| `/myweather`   | Set local weather (if sync is off).                       |
+| `/syncdelay`   | Set how often the server syncs with clients.              |
+| `/time`        | Set the server time.                                      |
+| `/timescale`   | Set the ratio of in-game seconds to real-time seconds.    |
+| `/weather`     | Set the server weather.                                   |
+| `/weathersync` | Toggle time/weather sync on/off.                          |
+| `/weatherui`   | Opens the admin UI for changing the time/weather/wind.    |
+| `/wind`        | Set the wind direction and base speed.                    |
 
 ## Configuration
 

@@ -1,6 +1,7 @@
 local CurrentWeather = nil
 local CurrentWindDirection = 0.0
 local SnowOnGround = false
+local SyncEnabled = true
 
 RegisterNetEvent('weatherSync:changeWeather')
 RegisterNetEvent('weatherSync:changeTime')
@@ -102,10 +103,16 @@ function IsSnowyWeather(weather)
 end
 
 AddEventHandler('weatherSync:changeWeather', function(weather, transitionTime, permanentSnow)
+	if not SyncEnabled then
+		return
+	end
+
 	local translatedWeather, inSnowyRegion = TranslateWeatherForRegion(weather)
 
 	if not CurrentWeather then
 		transitionTime = 1.0
+		SetSnowCoverageType(0)
+		SnowOnGround = false
 	end
 
 	if not inSnowyRegion and (permanentSnow or IsSnowyWeather(translatedWeather)) then
@@ -139,6 +146,10 @@ function NetworkOverrideClockTime(hour, minute, second, transitionTime, freezeTi
 end
 
 AddEventHandler('weatherSync:changeTime', function(hour, minute, second, transitionTime, freezeTime)
+	if not SyncEnabled then
+		return
+	end
+
 	NetworkOverrideClockTime(hour, minute, second, transitionTime, freezeTime)
 end)
 
@@ -199,7 +210,8 @@ function UpdateForecast(forecast)
 		action = 'updateForecast',
 		forecast = json.encode(forecast),
 		temperature = tempStr,
-		wind = windStr
+		wind = windStr,
+		syncEnabled = SyncEnabled
 	})
 end
 
@@ -288,10 +300,58 @@ RegisterNUICallback('closeAdminUi', function(data, cb)
 	cb({})
 end)
 
+function ToggleSync()
+	CurrentWeather = nil
+
+	SyncEnabled = not SyncEnabled
+
+	TriggerEvent('chat:addMessage', {
+		color = {255, 255, 128},
+		args = {'Weather Sync', SyncEnabled and 'on' or 'off'}
+	})
+end
+
+RegisterCommand('weathersync', function(source, args, raw)
+	ToggleSync()
+end)
+
+RegisterCommand('myweather', function(source, args, raw)
+	if SyncEnabled then
+		ToggleSync()
+	end
+
+	local weather = (args[1] and args[1] or CurrentWeather)
+	local transition = (args[2] and tonumber(args[2]) or 5.0)
+	local permanentSnow = args[3] == '1'
+
+	if transition <= 0.0 then
+		transition = 0.1
+	end
+
+	SetWeatherType(GetHashKey(weather), true, false, true, transition, false)
+
+	if permanentSnow then
+		SetSnowCoverageType(3)
+	else
+		SetSnowCoverageType(0)
+	end
+end)
+
+RegisterCommand('mytime', function(source, args, raw)
+	if SyncEnabled then
+		ToggleSync()
+	end
+
+	local h = (args[1] and tonumber(args[1]) or 0)
+	local m = (args[2] and tonumber(args[2]) or 0)
+	local s = (args[3] and tonumber(args[3]) or 0)
+	local t = (args[4] and tonumber(args[4]) or 0)
+
+	NetworkOverrideClockTime(h, m, s, t, true)
+end)
+
 CreateThread(function()
 	Wait(0)
-
-	SetSnowCoverageType(0)
 
 	SetNuiFocus(false, false)
 
@@ -302,9 +362,9 @@ CreateThread(function()
 	})
 
 	TriggerEvent('chat:addSuggestion', '/time', 'Change the time of day', {
-		{name = 'h', help = 'Hour, 0-23'},
-		{name = 'm', help = 'Minute, 0-59'},
-		{name = 's', help = 'Second, 0-59'},
+		{name = 'hour', help = '0-23'},
+		{name = 'minute', help = '0-59'},
+		{name = 'second', help = '0-59'},
 		{name = 'transition', help = 'Transition time in milliseconds'},
 		{name = 'freeze', help = '0 = don\'t freeze time, 1 = freeze time'}
 	})
@@ -326,5 +386,20 @@ CreateThread(function()
 		{name = 'direction', help = 'Direction of the wind in degrees'},
 		{name = 'speed', help = 'Minimum wind speed'},
 		{name = 'freeze', help = '0 don\'t freeze wind, 1 = freeze wind'}
+	})
+
+	TriggerEvent('chat:addSuggestion', '/weathersync', 'Enable/disable weather and time sync', {})
+
+	TriggerEvent('chat:addSuggestion', '/mytime', 'Change local time (if weathersync is off)', {
+		{name = 'hour', help = '0-23'},
+		{name = 'minute', help = '0-59'},
+		{name = 'second', help = '0-59'},
+		{name = 'transition', help = 'Transition time in milliseconds'}
+	})
+
+	TriggerEvent('chat:addSuggestion', '/myweather', 'Change local weather (if weathersync is off)', {
+		{name = 'type', help = 'The type of weather to change to'},
+		{name = 'transition', help = 'Transition time in seconds'},
+		{name = 'snow', help = '0 = no snow on ground, 1 = snow on ground'}
 	})
 end)

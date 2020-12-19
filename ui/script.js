@@ -10,6 +10,7 @@ function toggleForecast() {
 	toggleDisplay(document.querySelector('#forecast'), 'table');
 	toggleDisplay(document.querySelector('#temperature'), 'block');
 	toggleDisplay(document.querySelector('#wind'), 'block');
+	toggleDisplay(document.querySelector('#sync'), 'block');
 }
 
 function updateForecast(data) {
@@ -46,6 +47,12 @@ function updateForecast(data) {
 	t.innerHTML = data.temperature;
 
 	w.innerHTML = data.wind;
+
+	if (data.syncEnabled) {
+		document.getElementById('sync-status').innerHTML = '✔️';
+	} else {
+		document.getElementById('sync-status').innerHTML = '🚫';
+	}
 }
 
 function openAdminUi(data) {
