@@ -59,7 +59,7 @@ function NextWindDirection(direction)
 		return direction
 	end
 
-	return ((direction + math.random(0, 45)) % 360) * 1.0
+	return ((direction + math.random(0, 90) - 45) % 360) * 1.0
 end
 
 function GenerateForecast()
