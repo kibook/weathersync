@@ -10,6 +10,7 @@ RegisterNetEvent('weatherSync:toggleForecast')
 RegisterNetEvent('weatherSync:updateForecast')
 RegisterNetEvent('weatherSync:openAdminUi')
 RegisterNetEvent('weatherSync:updateAdminUi')
+RegisterNetEvent('weatherSync:toggleSync')
 
 function IsInSnowyRegion(x, y, z)
 	return x <= -700.0 and y >= 1090.0
@@ -310,6 +311,12 @@ function ToggleSync()
 		args = {'Weather Sync', SyncEnabled and 'on' or 'off'}
 	})
 end
+
+AddEventHandler('weatherSync:toggleSync', function(toggle)
+	if SyncEnabled ~= toggle then
+		ToggleSync()
+	end
+end)
 
 RegisterCommand('weathersync', function(source, args, raw)
 	ToggleSync()
