@@ -116,29 +116,15 @@ AddEventHandler('weatherSync:changeWeather', function(weather, transitionTime, p
 		SnowOnGround = false
 	end
 
-	if inSnowyRegion and not SnowOnGround then
-		SetSnowCoverageType(3)
-	elseif not inSnowyRegion and SnowOnGround then
-		SetSnowCoverageType(0)
-	end
-
 	if inSnowyRegion or permanentSnow or IsSnowyWeather(translatedWeather) then
 		if not SnowOnGround then
 			SnowOnGround = true
-			Citizen.SetTimeout(math.floor(transitionTime * 1500), function()
-				if SnowOnGround then
-					SetSnowCoverageType(3)
-				end
-			end)
+			SetSnowCoverageType(3)
 		end
 	else
 		if SnowOnGround then
 			SnowOnGround = false
-			Citizen.SetTimeout(math.floor(transitionTime * 1500), function()
-				if not SnowOnGround then
-					SetSnowCoverageType(0)
-				end
-			end)
+			SetSnowCoverageType(0)
 		end
 	end
 
