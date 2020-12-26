@@ -176,8 +176,11 @@ function UpdateForecast(forecast)
 		forecast[i].wind = GetCardinalDirection(forecast[i].wind)
 	end
 
+	local ped = PlayerPedId()
+	local pos = GetEntityCoords(ped)
+
 	-- Get local temperature
-	local x, y, z = table.unpack(GetEntityCoords(PlayerPedId()))
+	local x, y, z = table.unpack(pos)
 	local metric = ShouldUseMetricTemperature();
 	local temperature
 	local temperatureUnit
@@ -199,12 +202,17 @@ function UpdateForecast(forecast)
 	local tempStr = string.format('%d °%s', temperature, temperatureUnit)
 	local windStr = string.format('🌬️ %d %s %s', windSpeed, windSpeedUnit, GetCardinalDirection(CurrentWindDirection))
 
+	local altitudeSea = string.format('%.0f', pos.z - 40)
+	local altitudeTerrain = string.format('%.0f', GetEntityHeightAboveGround(ped))
+
 	SendNUIMessage({
 		action = 'updateForecast',
 		forecast = json.encode(forecast),
 		temperature = tempStr,
 		wind = windStr,
-		syncEnabled = SyncEnabled
+		syncEnabled = SyncEnabled,
+		altitudeSea = altitudeSea,
+		altitudeTerrain = altitudeTerrain
 	})
 end
 

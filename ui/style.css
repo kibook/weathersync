@@ -85,6 +85,19 @@ html, body {
 	font-family: "Chinese Rocks";
 }
 
+#altimeter {
+	display: none;
+	position: absolute;
+	top: 50%;
+	left: 0;
+	transform: translate(0, -50%);
+	color: white;
+	background-color: rgba(0, 0, 0, 0.5);
+	font-size: 1.7vw;
+	font-family: "Chinese Rocks";
+	padding: 0.5vh 0.5vw;
+}
+
 #admin-ui {
 	display: none;
 	position: absolute;

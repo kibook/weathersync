@@ -11,12 +11,16 @@ function toggleForecast() {
 	toggleDisplay(document.querySelector('#temperature'), 'block');
 	toggleDisplay(document.querySelector('#wind'), 'block');
 	toggleDisplay(document.querySelector('#sync'), 'block');
+	toggleDisplay(document.querySelector('#altimeter'), 'block');
 }
 
 function updateForecast(data) {
 	var f = document.querySelector('#forecast');
 	var t = document.querySelector('#temperature');
 	var w = document.querySelector('#wind');
+
+	var as = document.getElementById('altitude-sea');
+	var at = document.getElementById('altitude-terrain');
 
 	var forecastData = JSON.parse(data.forecast)
 
@@ -47,6 +51,9 @@ function updateForecast(data) {
 	t.innerHTML = data.temperature;
 
 	w.innerHTML = data.wind;
+
+	as.innerHTML = data.altitudeSea;
+	at.innerHTML = data.altitudeTerrain;
 
 	if (data.syncEnabled) {
 		document.getElementById('sync-status').innerHTML = '✔️';
