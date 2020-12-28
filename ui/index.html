@@ -11,8 +11,14 @@
 		<div id="wind"></div>
 		<div id="sync">Sync: <span id="sync-status"></span></div>
 		<div id="altimeter">
-			<div>🌊 <span id="altitude-sea"></span>m</div>
-			<div>⛰️ <span id="altitude-terrain"></span>m</div>
+			<div class="altimeter-gauge">
+				<div class="altimeter-gauge-label">🌊MSL</div>
+				<div class="altimeter-gauge-value"><span id="altitude-sea"></span>m</div>
+			</div>
+			<div class="altimeter-gauge">
+				<div class="altimeter-gauge-label">⛰️AGL</div>
+				<div class="altimeter-gauge-value"><span id="altitude-terrain"></span>m</div>
+			</div>
 		</div>
 		<div id="admin-ui">
 			<div class="admin-ui-option-group">

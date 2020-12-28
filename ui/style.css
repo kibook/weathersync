@@ -98,6 +98,23 @@ html, body {
 	padding: 0.5vh 0.5vw;
 }
 
+#altimeter-gauges {
+	display: table;
+}
+
+.altimeter-gauge {
+	display: table-row;
+}
+
+.altimeter-gauge-label, .altimeter-gauge-value {
+	display: table-cell;
+}
+
+.altimeter-gauge-value {
+	text-align: right;
+	padding-left: 0.5vw;
+}
+
 #admin-ui {
 	display: none;
 	position: absolute;
