@@ -81,12 +81,11 @@ Config.WeatherPattern = {
 	},
 
 	['overcast'] = {
-		['overcast']     = 4,
+		['overcast']     = 5,
 		['overcastdark'] = 40,
 		['drizzle']      = 30,
 		['shower']       = 10,
 		['rain']         = 15,
-		['snow']         = 1
 	},
 
 	['drizzle'] = {
@@ -131,11 +130,6 @@ Config.WeatherPattern = {
 		['shower']       = 5,
 		['overcast']     = 10,
 		['overcastdark'] = 85
-	},
-
-	['snow'] = {
-		['snow'] = 1,
-		['overcastdark'] = 99
 	}
 }
 
