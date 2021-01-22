@@ -17,7 +17,7 @@ function IsInSnowyRegion(x, y, z)
 end
 
 function IsInDesertRegion(x, y, z)
-	return x <= -2050 and y <= -2200
+	return x <= -2050 and y <= -1750
 end
 
 function IsInNorthernRegion(x, y, z)
