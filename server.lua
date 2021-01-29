@@ -130,6 +130,10 @@ end
 
 AddEventHandler('weatherSync:resetWeather', ResetWeather)
 
+function GetWeather()
+	return {name = CurrentWeather, icon = Config.WeatherIcons[CurrentWeather]}
+end
+
 local LogColors = {
 	['name'] = '\x1B[32m',
 	['default'] = '\x1B[0m',
@@ -213,6 +217,11 @@ function ResetTime()
 end
 
 AddEventHandler('weatherSync:resetTime', ResetTime())
+
+function GetTime()
+	local h, m, s = TimeToHMS(CurrentTime)
+	return {hour = h, minute = m, second = s}
+end
 
 function SetTimescale(scale)
 	CurrentTimescale = scale
@@ -351,10 +360,12 @@ RegisterCommand('weatherui', function(source, args, raw)
 	TriggerClientEvent('weatherSync:openAdminUi', source)
 end, true)
 
+exports('getTime', GetTime)
 exports('setTime', SetTime)
 exports('resetTime', ResetTime)
 exports('setTimescale', SetTimescale)
 exports('resetTimescale', ResetTimescale)
+exports('getWeather', GetWeather)
 exports('setWeather', SetWeather)
 exports('resetWeather', ResetWeather)
 exports('setWeatherPattern', SetWeatherPattern)
