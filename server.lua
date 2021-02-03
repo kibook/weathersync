@@ -15,6 +15,9 @@ local PermanentSnow = Config.PermanentSnow
 local WeatherTicks = 0
 local WeatherForecast = {}
 
+local DayLength = 86400
+local CycleLength = 604800
+
 RegisterNetEvent('weatherSync:requestUpdatedForecast')
 RegisterNetEvent('weatherSync:requestUpdatedAdminUi')
 RegisterNetEvent('weatherSync:setTime')
@@ -186,29 +189,30 @@ end
 
 AddEventHandler('weatherSync:resetWeatherPattern', ResetWeatherPattern)
 
-function SetTime(h, m, s, t, f)
+function SetTime(d, h, m, s, t, f)
 	TriggerClientEvent('weatherSync:changeTime', -1, h, m, s, t, true)
-	CurrentTime = HMSToTime(h, m, s)
+	CurrentTime = DHMSToTime(d, h, m, s)
 	TimeIsFrozen = f
 end
 
 RegisterCommand('time', function(source, args, raw)
 	if #args > 0 then
-		local h = (args[1] and tonumber(args[1]) or 0)
-		local m = (args[2] and tonumber(args[2]) or 0)
-		local s = (args[3] and tonumber(args[3]) or 0)
-		local t = (args[4] and tonumber(args[4]) or 0)
-		local f = args[5] == '1'
+		local d = (args[1] and tonumber(args[1]) or 0)
+		local h = (args[2] and tonumber(args[2]) or 0)
+		local m = (args[3] and tonumber(args[3]) or 0)
+		local s = (args[4] and tonumber(args[4]) or 0)
+		local t = (args[5] and tonumber(args[5]) or 0)
+		local f = args[6] == '1'
 
-		SetTime(h, m, s, t, f)
+		SetTime(d, h, m, s, t, f)
 	else
-		local h, m, s = TimeToHMS(CurrentTime)
-		PrintMessage(source, {color = {255, 255, 128}, args = {'Time', string.format('%.2d:%.2d:%.2d', h, m, s)}})
+		local d, h, m, s = TimeToDHMS(CurrentTime)
+		PrintMessage(source, {color = {255, 255, 128}, args = {'Time', string.format('%s %.2d:%.2d:%.2d', GetDayOfWeek(d), h, m, s)}})
 	end
 end, true)
 
-AddEventHandler('weatherSync:setTime', function(h, m, s, t, f)
-	SetTime(h, m, s, t, f)
+AddEventHandler('weatherSync:setTime', function(d, h, m, s, t, f)
+	SetTime(d, h, m, s, t, f)
 end)
 
 function ResetTime()
@@ -219,8 +223,8 @@ end
 AddEventHandler('weatherSync:resetTime', ResetTime())
 
 function GetTime()
-	local h, m, s = TimeToHMS(CurrentTime)
-	return {hour = h, minute = m, second = s}
+	local d, h, m, s = TimeToDHMS(CurrentTime)
+	return {day = d, hour = h, minute = m, second = s}
 end
 
 function SetTimescale(scale)
@@ -300,19 +304,19 @@ function CreateForecast()
 	local forecast = {}
 
 	for i = 0, #WeatherForecast do
-		local h, m, s, weather, wind
+		local d, h, m, s, weather, wind
 
 		if i == 0 then
-			h, m, s = TimeToHMS(CurrentTime)
+			d, h, m, s = TimeToDHMS(CurrentTime)
 			weather = CurrentWeather
 			wind = CurrentWindDirection
 		else
-			local time = (TimeIsFrozen and CurrentTime or (CurrentTime + WeatherInterval * i) % 86400)
-			h, m, s = TimeToHMS(time - time % WeatherInterval)
+			local time = (TimeIsFrozen and CurrentTime or (CurrentTime + WeatherInterval * i) % CycleLength)
+			d, h, m, s = TimeToDHMS(time - time % WeatherInterval)
 			weather = WeatherForecast[i].weather
 			wind = WeatherForecast[i].wind
 		end
-		table.insert(forecast, {hour = h, min = m, sec = s, weather = weather, wind = wind})
+		table.insert(forecast, {day = d, hour = h, min = m, sec = s, weather = weather, wind = wind})
 	end
 
 	return forecast
@@ -326,7 +330,7 @@ RegisterCommand('forecast', function(source, args, raw)
 		PrintMessage(source, {args = {'WEATHER FORECAST'}})
 		PrintMessage(source, {args = {'================'}})
 		for i = 1, #forecast do
-			local time = string.format('%.2d:%.2d', forecast[i].hour, forecast[i].min)
+			local time = string.format('%s %.2d:%.2d', GetDayOfWeek(forecast[i].day), forecast[i].hour, forecast[i].min)
 			PrintMessage(source, {args = {time, forecast[i].weather}})
 		end
 		PrintMessage(source, {args = {'================'}})
@@ -343,8 +347,8 @@ end)
 
 function SyncTime(tick)
 	-- Ensure time doesn't wrap around when transitioning from ~23:59:59 to ~00:00:00
-	local timeTransition = ((86400 - CurrentTime + tick) % 86400 <= tick and 0 or SyncDelay)
-	local hour, minute, second = TimeToHMS(CurrentTime)
+	local timeTransition = ((DayLength - (CurrentTime % DayLength) + tick) % DayLength <= tick and 0 or SyncDelay)
+	local day, hour, minute, second = TimeToDHMS(CurrentTime)
 	TriggerClientEvent('weatherSync:changeTime', -1, hour, minute, second, timeTransition, false)
 end
 
@@ -386,7 +390,7 @@ CreateThread(function()
 		local tick = CurrentTimescale * (SyncDelay / 1000)
 
 		if not TimeIsFrozen then
-			CurrentTime = math.floor(CurrentTime + tick) % 86400
+			CurrentTime = math.floor(CurrentTime + tick) % CycleLength
 		end
 
 		if not WeatherIsFrozen then

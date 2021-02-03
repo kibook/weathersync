@@ -253,13 +253,14 @@ AddEventHandler('weatherSync:openAdminUi', function()
 end)
 
 AddEventHandler('weatherSync:updateAdminUi', function(weather, time, timescale, windDirection, windSpeed, syncDelay)
-	local h, m, s = TimeToHMS(time)
+	local d, h, m, s = TimeToDHMS(time)
 
 	SendNUIMessage({
 		action = 'updateAdminUi',
 		weatherTypes = json.encode(WeatherTypes),
 		weatherIcons = json.encode(Config.WeatherIcons),
 		weather = weather,
+		day = d,
 		hour = h,
 		min = m,
 		sec = s,
@@ -271,7 +272,7 @@ AddEventHandler('weatherSync:updateAdminUi', function(weather, time, timescale, 
 end)
 
 RegisterNUICallback('setTime', function(data, cb)
-	TriggerServerEvent('weatherSync:setTime', data.hour, data.min, data.sec, data.transition, data.freeze)
+	TriggerServerEvent('weatherSync:setTime', data.day, data.hour, data.min, data.sec, data.transition, data.freeze)
 	cb({})
 end)
 
@@ -368,7 +369,8 @@ CreateThread(function()
 		{name = 'delay', help = 'The time in milliseconds between syncs'}
 	})
 
-	TriggerEvent('chat:addSuggestion', '/time', 'Change the time of day', {
+	TriggerEvent('chat:addSuggestion', '/time', 'Change the time', {
+		{name = 'day', help = '0 = Sun, 1 = Mon, 2 = Tue, 3 = Wed, 4 = Thu, 5 = Fri, 6 = Sat'},
 		{name = 'hour', help = '0-23'},
 		{name = 'minute', help = '0-59'},
 		{name = 'second', help = '0-59'},

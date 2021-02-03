@@ -1,7 +1,7 @@
 Config = {}
 
 -- Default time when the server starts
-Config.Time = HMSToTime(6, 0, 0)
+Config.Time = DHMSToTime(0, 6, 0, 0)
 
 -- Default ratio of in-game seconds to real seconds. Standard game time is 30:1, or 1 in-game minute = 2 real secons
 Config.Timescale = 30
@@ -13,7 +13,7 @@ Config.TimeIsFrozen = false
 Config.Weather = 'sunny'
 
 -- The interval (in-game time) between weather changes
-Config.WeatherInterval = HMSToTime(1, 0, 0)
+Config.WeatherInterval = DHMSToTime(0, 1, 0, 0)
 
 -- Whether weather is frozen at server start
 Config.WeatherIsFrozen = false

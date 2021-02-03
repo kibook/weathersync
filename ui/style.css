@@ -30,6 +30,14 @@ html, body {
 	display: table-row;
 }
 
+.forecast-day {
+	display: table-cell;
+	text-align: left;
+	vertical-align: middle;
+	font-size: 75%;
+	padding: 0 0.5vw 0 0;
+}
+
 .forecast-time {
 	display: table-cell;
 	text-align: right;

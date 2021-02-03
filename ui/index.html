@@ -27,6 +27,7 @@
 					<div class="labelled-input">
 						<div class="label">Current time:</div>
 						<div class="input">
+							<input type="text" id="cur-day" readonly size="3">
 							<input type="number" id="cur-hour" readonly min="0" max="23" step="1">
 							<input type="number" id="cur-min" readonly min="0" max="59" step="1">
 							<input type="number" id="cur-sec" readonly min="0" max="59" step="1">
@@ -35,6 +36,15 @@
 					<div class="labelled-input">
 						<div class="label">Set time:</div>
 						<div class="input">
+							<select id="new-day">
+								<option value="0">Sun</option>
+								<option value="1">Mon</option>
+								<option value="2">Tue</option>
+								<option value="3">Wed</option>
+								<option value="4">Thu</option>
+								<option value="5">Fri</option>
+								<option value="6">Sat</option>
+							</select>
 							<input type="number" id="new-hour" min="0" max="23" step="1" value="0">
 							<input type="number" id="new-min" min="0" max="59" step="1" value="0">
 							<input type="number" id="new-sec" min="0" max="59" step="1" value="0">

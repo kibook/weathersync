@@ -22,16 +22,17 @@ WeatherTypes = {
 	'whiteout'
 }
 
-function TimeToHMS(time)
-	local hour = math.floor(time / 60 / 60)
+function TimeToDHMS(time)
+	local day = math.floor(time / 86400)
+	local hour = math.floor(time / 60 / 60) % 24
 	local minute = math.floor(time / 60) % 60
 	local second = time % 60
 
-	return hour, minute, second
+	return day, hour, minute, second
 end
 
-function HMSToTime(hour, minute, second)
-	return hour * 3600 + minute * 60 + second
+function DHMSToTime(day, hour, minute, second)
+	return day * 86400 + hour * 3600 + minute * 60 + second
 end
 
 function GetCardinalDirection(h)
@@ -54,4 +55,8 @@ function GetCardinalDirection(h)
 	else
 		return "N"
 	end
+end
+
+function GetDayOfWeek(day)
+	return ({"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"})[day + 1]
 end

@@ -14,6 +14,10 @@ function toggleForecast() {
 	toggleDisplay(document.querySelector('#altimeter'), 'block');
 }
 
+function dayOfWeek(day) {
+	return ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][day];
+}
+
 function updateForecast(data) {
 	var f = document.querySelector('#forecast');
 	var t = document.querySelector('#temperature');
@@ -26,9 +30,19 @@ function updateForecast(data) {
 
 	f.innerHTML = '';
 
+	var prevDay;
+
 	for (var i = 0; i < forecastData.length; ++i) {
 		var hour = document.createElement('div');
 		hour.className = 'forecast-hour';
+
+		var day = document.createElement('div');
+		day.className = 'forecast-day';
+
+		if (forecastData[i].day != prevDay) {
+			day.innerHTML = dayOfWeek(forecastData[i].day);
+			prevDay = forecastData[i].day;
+		}
 		
 		var time = document.createElement('div');
 		time.className = 'forecast-time';
@@ -42,6 +56,7 @@ function updateForecast(data) {
 		wind.className = 'forecast-wind';
 		wind.innerHTML = forecastData[i].wind;
 
+		hour.appendChild(day);
 		hour.appendChild(time);
 		hour.appendChild(weather);
 		hour.appendChild(wind);
@@ -69,6 +84,7 @@ function openAdminUi(data) {
 function updateAdminUi(data) {
 	var weatherTypes = JSON.parse(data.weatherTypes);
 	var weatherIcons = JSON.parse(data.weatherIcons);
+	var curDay = document.querySelector('#cur-day');
 	var curHour = document.querySelector('#cur-hour');
 	var curMin = document.querySelector('#cur-min');
 	var curSec = document.querySelector('#cur-sec');
@@ -78,6 +94,7 @@ function updateAdminUi(data) {
 	var windSpeed = document.querySelector('#cur-wind-speed');
 	var syncDelay = document.querySelector('#sync-delay');
 
+	curDay.value = dayOfWeek(data.day);
 	curHour.value = data.hour;
 	curMin.value = data.min;
 	curSec.value = data.sec;
@@ -117,6 +134,7 @@ window.addEventListener('message', function (event) {
 
 window.addEventListener('load', function() {
 	document.querySelector('#apply-time-btn').addEventListener('click', function(event) {
+		var day = document.querySelector('#new-day');
 		var hour = document.querySelector('#new-hour');
 		var min = document.querySelector('#new-min');
 		var sec = document.querySelector('#new-sec');
@@ -129,6 +147,7 @@ window.addEventListener('load', function() {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
+				day: parseInt(day.value),
 				hour: parseInt(hour.value),
 				min: parseInt(min.value),
 				sec: parseInt(sec.value),
