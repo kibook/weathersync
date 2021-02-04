@@ -162,17 +162,17 @@ function UpdateForecast(forecast)
 			forecast[i].time = string.format(
 				'%.2d:%.2d',
 				forecast[i].hour,
-				forecast[i].min)
+				forecast[i].minute)
 		else
 			local h = forecast[i].hour % 12
 			forecast[i].time = string.format(
 				'%d:%.2d %s',
 				h == 0 and 12 or h,
-				forecast[i].min,
+				forecast[i].minute,
 				forecast[i].hour > 12 and 'PM' or 'AM')
 		end
 
-		forecast[i].weather = Config.WeatherIcons[TranslateWeatherForRegion(forecast[i].weather)]
+		forecast[i].weather = TranslateWeatherForRegion(forecast[i].weather)
 		forecast[i].wind = GetCardinalDirection(forecast[i].wind)
 	end
 
@@ -258,7 +258,6 @@ AddEventHandler('weatherSync:updateAdminUi', function(weather, time, timescale, 
 	SendNUIMessage({
 		action = 'updateAdminUi',
 		weatherTypes = json.encode(WeatherTypes),
-		weatherIcons = json.encode(Config.WeatherIcons),
 		weather = weather,
 		day = d,
 		hour = h,

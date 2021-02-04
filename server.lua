@@ -134,7 +134,7 @@ end
 AddEventHandler('weatherSync:resetWeather', ResetWeather)
 
 function GetWeather()
-	return {name = CurrentWeather, icon = Config.WeatherIcons[CurrentWeather]}
+	return CurrentWeather
 end
 
 local LogColors = {
@@ -316,7 +316,8 @@ function CreateForecast()
 			weather = WeatherForecast[i].weather
 			wind = WeatherForecast[i].wind
 		end
-		table.insert(forecast, {day = d, hour = h, min = m, sec = s, weather = weather, wind = wind})
+
+		table.insert(forecast, {day = d, hour = h, minute = m, second = s, weather = weather, wind = wind})
 	end
 
 	return forecast
@@ -330,8 +331,8 @@ RegisterCommand('forecast', function(source, args, raw)
 		PrintMessage(source, {args = {'WEATHER FORECAST'}})
 		PrintMessage(source, {args = {'================'}})
 		for i = 1, #forecast do
-			local time = string.format('%s %.2d:%.2d', GetDayOfWeek(forecast[i].day), forecast[i].hour, forecast[i].min)
-			PrintMessage(source, {args = {time, forecast[i].weather}})
+			local time = string.format('%s %.2d:%.2d', GetDayOfWeek(forecast[i].day), forecast[i].hour, forecast[i].minute)
+			PrintMessage(source, {args = {time, forecast[i].weather.name}})
 		end
 		PrintMessage(source, {args = {'================'}})
 	end
@@ -378,6 +379,7 @@ exports('setWind', SetWind)
 exports('resetWind', ResetWind)
 exports('setSyncDelay', SetSyncDelay)
 exports('resetSyncDelay', ResetSyncDelay)
+exports('getForecast', CreateForecast)
 
 ValidateWeatherPattern(WeatherPattern)
 

@@ -132,27 +132,3 @@ Config.WeatherPattern = {
 		['overcastdark'] = 85
 	}
 }
-
-Config.WeatherIcons = {
-	['blizzard']       = '❄️',
-	['clouds']         = '⛅',
-	['drizzle']        = '🌧️',
-	['fog']            = '🌫️',
-	['groundblizzard'] = '❄️',
-	['hail']           = '🌨️',
-	['highpressure']   = '☀️',
-	['hurricane']      = '🌪️',
-	['misty']          = '🌫️',
-	['overcast']       = '☁️',
-	['overcastdark']   = '☁️',
-	['rain']           = '🌧️',
-	['sandstorm']      = '🌬️',
-	['shower']         = '🌧️',
-	['sleet']          = '🌧️',
-	['snow']           = '🌨️',
-	['snowlight']      = '🌨️',
-	['sunny']          = '☀️',
-	['thunder']        = '🌩️',
-	['thunderstorm']   = '⛈️',
-	['whiteout']       = '❄️'
-}

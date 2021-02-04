@@ -1,3 +1,27 @@
+const weatherIcons = {
+	blizzard:       "❄️",
+	clouds:         "⛅",
+	drizzle:        "🌧️",
+	fog:            "🌫️",
+	groundblizzard: "❄️",
+	hail:           "🌨️",
+	highpressure:   "☀️",
+	hurricane:      "🌀",
+	misty:          "🌫️",
+	overcast:       "☁️",
+	overcastdark:   "☁️",
+	rain:           "🌧️",
+	sandstorm:      "🌪️",
+	shower:         "🌧️",
+	sleet:          "🌧️",
+	snow:           "🌨️",
+	snowlight:      "🌨️",
+	sunny:          "☀️",
+	thunder:        "🌩️",
+	thunderstorm:   "⛈️",
+	whiteout:       "❄️"
+};
+
 function toggleDisplay(e, display) {
 	if (e.style.display == display) {
 		e.style.display = 'none';
@@ -50,7 +74,7 @@ function updateForecast(data) {
 		
 		var weather = document.createElement('div');
 		weather.className = 'forecast-weather';
-		weather.innerHTML = forecastData[i].weather;
+		weather.innerHTML = weatherIcons[forecastData[i].weather];
 
 		var wind = document.createElement('div');
 		wind.className = 'forecast-wind';
@@ -83,7 +107,6 @@ function openAdminUi(data) {
 
 function updateAdminUi(data) {
 	var weatherTypes = JSON.parse(data.weatherTypes);
-	var weatherIcons = JSON.parse(data.weatherIcons);
 	var curDay = document.querySelector('#cur-day');
 	var curHour = document.querySelector('#cur-hour');
 	var curMin = document.querySelector('#cur-min');
