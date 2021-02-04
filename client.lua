@@ -13,7 +13,7 @@ RegisterNetEvent('weatherSync:updateAdminUi')
 RegisterNetEvent('weatherSync:toggleSync')
 
 function IsInSnowyRegion(x, y, z)
-	return x <= -700.0 and y >= 1090.0
+	return (x <= -700.0 and y >= 1090.0) or (x <= -500.0 and y >= 2388.0)
 end
 
 function IsInDesertRegion(x, y, z)
@@ -43,12 +43,16 @@ function TranslateWeatherForRegion(weather)
 	elseif weather == 'thunderstorm' then
 		if IsInSnowyRegion(x, y, z) then
 			return 'blizzard', true
+		elseif IsInNorthernRegion(x, y, z) and temp < 0.0 then
+			return 'blizzard'
 		elseif IsInDesertRegion(x, y, z) then
 			return 'rain'
 		end
 	elseif weather == 'hurricane' then
 		if IsInSnowyRegion(x, y, z) then
 			return 'whiteout', true
+		elseif IsInNorthernRegion(x, y, z) and temp < 0.0 then
+			return 'whiteout'
 		elseif IsInDesertRegion(x, y, z) then
 			return 'sandstorm'
 		end
@@ -63,6 +67,8 @@ function TranslateWeatherForRegion(weather)
 	elseif weather == 'shower' then
 		if IsInSnowyRegion(x, y, z) then
 			return 'groundblizzard', true
+		elseif IsInNorthernRegion(x, y, z) and temp < 0.0 then
+			return 'groundblizzard'
 		elseif IsInDesertRegion(x, y, z) then
 			return 'sunny'
 		end
