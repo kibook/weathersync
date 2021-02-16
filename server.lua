@@ -333,7 +333,7 @@ RegisterCommand('forecast', function(source, args, raw)
 		PrintMessage(source, {args = {'================'}})
 		for i = 1, #forecast do
 			local time = string.format('%s %.2d:%.2d', GetDayOfWeek(forecast[i].day), forecast[i].hour, forecast[i].minute)
-			PrintMessage(source, {args = {time, forecast[i].weather.name}})
+			PrintMessage(source, {args = {time, forecast[i].weather}})
 		end
 		PrintMessage(source, {args = {'================'}})
 	end
