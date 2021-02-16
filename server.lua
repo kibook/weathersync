@@ -18,6 +18,7 @@ local WeatherForecast = {}
 local DayLength = 86400
 local CycleLength = 604800
 
+RegisterNetEvent('weatherSync:init')
 RegisterNetEvent('weatherSync:requestUpdatedForecast')
 RegisterNetEvent('weatherSync:requestUpdatedAdminUi')
 RegisterNetEvent('weatherSync:setTime')
@@ -346,20 +347,26 @@ AddEventHandler('weatherSync:requestUpdatedAdminUi', function()
 	TriggerClientEvent('weatherSync:updateAdminUi', source, CurrentWeather, CurrentTime, CurrentTimescale, CurrentWindDirection, CurrentWindSpeed, SyncDelay)
 end)
 
-function SyncTime(tick)
+function SyncTime(player, tick)
 	-- Ensure time doesn't wrap around when transitioning from ~23:59:59 to ~00:00:00
 	local timeTransition = ((DayLength - (CurrentTime % DayLength) + tick) % DayLength <= tick and 0 or SyncDelay)
 	local day, hour, minute, second = TimeToDHMS(CurrentTime)
-	TriggerClientEvent('weatherSync:changeTime', -1, hour, minute, second, timeTransition, false)
+	TriggerClientEvent('weatherSync:changeTime', player, hour, minute, second, timeTransition, false)
 end
 
-function SyncWeather()
-	TriggerClientEvent('weatherSync:changeWeather', -1, CurrentWeather, WeatherInterval / CurrentTimescale / 4, PermanentSnow)
+function SyncWeather(player)
+	TriggerClientEvent('weatherSync:changeWeather', player, CurrentWeather, WeatherInterval / CurrentTimescale / 4, PermanentSnow)
 end
 
-function SyncWind()
-	TriggerClientEvent('weatherSync:changeWind', -1, CurrentWindDirection, CurrentWindSpeed)
+function SyncWind(player)
+	TriggerClientEvent('weatherSync:changeWind', player, CurrentWindDirection, CurrentWindSpeed)
 end
+
+AddEventHandler('weatherSync:init', function()
+	SyncTime(source, 0)
+	SyncWeather(source)
+	SyncWind(source)
+end)
 
 RegisterCommand('weatherui', function(source, args, raw)
 	TriggerClientEvent('weatherSync:openAdminUi', source)
@@ -414,8 +421,8 @@ CreateThread(function()
 			end
 		end
 
-		SyncTime(tick)
-		SyncWeather()
-		SyncWind()
+		SyncTime(-1, tick)
+		SyncWeather(-1)
+		SyncWind(-1)
 	end
 end)

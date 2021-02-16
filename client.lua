@@ -416,4 +416,6 @@ CreateThread(function()
 		{name = 'transition', help = 'Transition time in seconds'},
 		{name = 'snow', help = '0 = no snow on ground, 1 = snow on ground'}
 	})
+
+	TriggerServerEvent('weatherSync:init')
 end)
