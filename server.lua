@@ -301,6 +301,10 @@ end
 
 AddEventHandler('weatherSync:resetWind', ResetWind)
 
+function GetWind()
+	return {direction = CurrentWindDirection, speed = CurrentWindSpeed}
+end
+
 function CreateForecast()
 	local forecast = {}
 
@@ -382,6 +386,7 @@ exports('setWeather', SetWeather)
 exports('resetWeather', ResetWeather)
 exports('setWeatherPattern', SetWeatherPattern)
 exports('resetWeatherPattern', ResetWeatherPattern)
+exports('getWind', GetWind)
 exports('setWind', SetWind)
 exports('resetWind', ResetWind)
 exports('setSyncDelay', SetSyncDelay)

@@ -150,8 +150,26 @@ Reset the weather pattern to the default configured pattern.
 exports.weathersync:resetWeatherPattern()
 ```
 
+### getWind
+Get the current wind direction and base speed.
+
+#### Usage
+```lua
+exports.weathersync:getWind()
+```
+
+#### Return value
+A table containing the wind direction and base speed:
+
+```lua
+{
+	direction = 180.0,
+	speed = 0.0
+}
+```
+
 ### setWind
-Set the current wind direction and speed.
+Set the current wind direction and base speed.
 
 #### Usage
 ```lua
