@@ -1,21 +1,31 @@
 Config = {}
 
--- Default time when the server starts
+-- Default time when the resource starts
+--
+-- Can be specified in seconds out of a week (0-604799) or with the DHMSToTime
+-- function as follows:
+--
+-- DHMSToTime(day, hour, minute, second)
+--
+-- day		0 (Sun) - 6 (Sat)
+-- hour		0-23
+-- minute	0-59
+-- second	0-59
 Config.Time = DHMSToTime(0, 6, 0, 0)
 
 -- Default ratio of in-game seconds to real seconds. Standard game time is 30:1, or 1 in-game minute = 2 real secons
 Config.Timescale = 30
 
--- Whether time is frozen at server start
+-- Whether time is frozen when the resource starts
 Config.TimeIsFrozen = false
 
--- Default weather when the server starts
+-- Default weather when the resource starts
 Config.Weather = 'sunny'
 
 -- The interval (in-game time) between weather changes
 Config.WeatherInterval = DHMSToTime(0, 1, 0, 0)
 
--- Whether weather is frozen at server start
+-- Whether weather is frozen when the resource starts
 Config.WeatherIsFrozen = false
 
 -- Whether to permanently add snow on the ground, or only during snowy weather
@@ -24,13 +34,13 @@ Config.PermanentSnow = false
 -- Number of weather intervals to queue up
 Config.MaxForecast = 23
 
--- Default wind direction when the server starts
+-- Default wind direction when the resource starts
 Config.WindDirection = 0.0
 
--- Default wind speed when the server starts
+-- Default base wind speed when the resource starts
 Config.WindSpeed = 0.0
 
--- Whether wind direction is frozen when the server starts
+-- Whether wind direction is frozen when the resource starts
 Config.WindIsFrozen = false
 
 -- How often in milliseconds to sync with clients

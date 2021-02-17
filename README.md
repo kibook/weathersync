@@ -37,18 +37,178 @@
 
 ## Configuration
 
-| Variable                 | Description                                         | Example                               |
-|--------------------------|-----------------------------------------------------|---------------------------------------|
-| `Config.Time`            | Initial time when the resource starts.              | `HMSToTime(6, 0, 0)` (06:00:00)       |
-| `Config.Timescale`       | Initial timescale when the resource starts          | `30.0` (30 in-game secs per real sec) |
-| `Config.TimeIsFrozen`    | Whether time is frozen when the resource starts.    | `false`                               |
-| `Config.Weather`         | Initial weather when the resource starts.           | `'sunny'`                             |
-| `Config.WeatherInterval` | How often the weather changes.                      | `HMSToTime(1, 0, 0)` (1 in-game hour) |
-| `Config.WeatherIsFrozen` | Whether weather is frozen when the resource starts. | `false`                               |
-| `Config.MaxForecast`     | Number of weather intervals to queue up.            | `23` (24-hour forecast)               |
-| `Config.WindDirection`   | Initial wind direction when the resource starts.    | `0.0` (North)                         |
-| `Config.WindSpeed`       | Initial base wind speed when the resource starts.   | `0.0`                                 |
-| `Config.WindIsFrozen`    | Whether wind direction/speed are frozen.            | `false`                               |
-| `Config.SyncDelay`       | How often in ms to sync with clients.               | `5000`                                |
-| `Config.WeatherPattern`  | A table describing the the weather pattern.         | See [config.lua](config.lua)          |
-| `Config.WeatherIcons`    | Icons to use for each weather type in the forecast. | See [config.lua](config.lua)          |
+| Variable                 | Description                                         | Example                                   |
+|--------------------------|-----------------------------------------------------|-------------------------------------------|
+| `Config.Time`            | Default time when the resource starts.              | `DHMSToTime(0, 6, 0, 0)` (Sun 06:00:00)   |
+| `Config.Timescale`       | Default timescale when the resource starts          | `30.0` (30 in-game secs per real sec)     |
+| `Config.TimeIsFrozen`    | Whether time is frozen when the resource starts.    | `false`                                   |
+| `Config.Weather`         | Default weather when the resource starts.           | `"sunny"`                                 |
+| `Config.WeatherInterval` | How often the weather changes.                      | `DHMSToTime(0, 1, 0, 0)` (1 in-game hour) |
+| `Config.WeatherIsFrozen` | Whether weather is frozen when the resource starts. | `false`                                   |
+| `Config.MaxForecast`     | Number of weather intervals to queue up.            | `23` (24-hour forecast)                   |
+| `Config.WindDirection`   | Default wind direction when the resource starts.    | `0.0` (North)                             |
+| `Config.WindSpeed`       | Default base wind speed when the resource starts.   | `0.0`                                     |
+| `Config.WindIsFrozen`    | Whether wind direction is frozen.                   | `false`                                   |
+| `Config.SyncDelay`       | How often in ms to sync with clients.               | `5000`                                    |
+| `Config.WeatherPattern`  | A table describing the the weather pattern.         | See [config.lua](config.lua)              |
+
+## Exports
+
+### getTime
+Get the current server time.
+
+#### Usage
+```lua
+exports.weathersync:getTime()
+```
+
+#### Return value
+A table with the current day, hour, minute and second:
+
+```lua
+{
+	day = 0,
+	hour = 6,
+	minute = 0,
+	second = 0
+}
+```
+### setTime
+Set the current time.
+
+#### Usage
+```lua
+exports.weathersync:setTime(day, hour, minute, second, transition, freeze)
+```
+
+### resetTime
+Reset the time to the default configured time.
+
+#### Usage
+```lua
+exports.weathersync:resetTime()
+```
+
+### setTimescale
+Set the ratio of in-game seconds to real seconds.
+
+#### Usage
+```lua
+exports.weathersync:setTimescale(timescale)
+```
+
+### resetTimescale
+Reset the timescale to the default configured value.
+
+#### Usage
+```lua
+exports.weathersync:resetTimescale()
+```
+
+### getWeather
+Get the current weather.
+
+#### Usage
+```lua
+exports.weathersync:getWeather()
+```
+
+#### Return value
+The name of the current weather type.
+
+### setWeather
+Set the current weather.
+
+#### Usage
+```lua
+exports.weathersync:setWeather()
+```
+
+### resetWeather
+Reset the weather to the default configured weather type.
+
+#### Usage
+```lua
+exports.weathersync:resetWeather()
+```
+
+### setWeatherPattern
+Set the weather pattern.
+
+#### Usage
+```lua
+exports.weathersync:setWeatherPattern(pattern)
+```
+
+### resetWeatherPattern
+Reset the weather pattern to the default configured pattern.
+
+#### Usage
+```lua
+exports.weathersync:resetWeatherPattern()
+```
+
+### setWind
+Set the current wind direction and speed.
+
+#### Usage
+```lua
+exports.weathersync:setWind(direction, speed)
+```
+
+### resetWind
+Reset the wind direction and speed to the default configured values.
+
+#### Usage
+```lua
+exports.weathersync:resetWind()
+```
+
+### setSyncDelay
+Set the current synchronization interval.
+
+#### Usage
+```lua
+exports.weathersync:setSyncDelay(delay)
+```
+
+### resetSyncDelay
+Reset the sync delay to the default configured value.
+
+#### Usage
+```lua
+exports.weathersync:resetSyncDelay()
+```
+
+### getForecast
+Get the current weather forecast.
+
+#### Usage
+```lua
+exports.weathersync:getForecast()
+```
+
+#### Return value
+A table containing the weather forecast:
+
+```lua
+{
+	{
+		day = 0,
+		hour = 6,
+		minute = 0,
+		second = 0,
+		weather = "sunny",
+		wind = 0.0
+	},
+	{
+		day = 0,
+		hour = 7,
+		minute = 0,
+		second = 0,
+		weather = "clouds",
+		wind = 10.0
+	},
+	...
+}
+```

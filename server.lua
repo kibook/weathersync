@@ -16,7 +16,7 @@ local WeatherTicks = 0
 local WeatherForecast = {}
 
 local DayLength = 86400
-local CycleLength = 604800
+local WeekLength = 604800
 
 RegisterNetEvent('weatherSync:init')
 RegisterNetEvent('weatherSync:requestUpdatedForecast')
@@ -312,7 +312,7 @@ function CreateForecast()
 			weather = CurrentWeather
 			wind = CurrentWindDirection
 		else
-			local time = (TimeIsFrozen and CurrentTime or (CurrentTime + WeatherInterval * i) % CycleLength)
+			local time = (TimeIsFrozen and CurrentTime or (CurrentTime + WeatherInterval * i) % WeekLength)
 			d, h, m, s = TimeToDHMS(time - time % WeatherInterval)
 			weather = WeatherForecast[i].weather
 			wind = WeatherForecast[i].wind
@@ -399,7 +399,7 @@ CreateThread(function()
 		local tick = CurrentTimescale * (SyncDelay / 1000)
 
 		if not TimeIsFrozen then
-			CurrentTime = math.floor(CurrentTime + tick) % CycleLength
+			CurrentTime = math.floor(CurrentTime + tick) % WeekLength
 		end
 
 		if not WeatherIsFrozen then
