@@ -122,7 +122,7 @@ AddEventHandler('weatherSync:changeWeather', function(weather, transitionTime, p
 		SnowOnGround = false
 	end
 
-	if inSnowyRegion or permanentSnow or IsSnowyWeather(translatedWeather) then
+	if permanentSnow or (Config.DynamicSnow and (inSnowyRegion or IsSnowyWeather(translatedWeather))) then
 		if not SnowOnGround then
 			SnowOnGround = true
 			SetSnowCoverageType(3)

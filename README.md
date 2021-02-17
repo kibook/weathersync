@@ -45,6 +45,8 @@
 | `Config.Weather`         | Default weather when the resource starts.           | `"sunny"`                                 |
 | `Config.WeatherInterval` | How often the weather changes.                      | `DHMSToTime(0, 1, 0, 0)` (1 in-game hour) |
 | `Config.WeatherIsFrozen` | Whether weather is frozen when the resource starts. | `false`                                   |
+| `Config.PermanentSnow`   | Whether to permanently add snow on the ground.      | `false`                                   |
+| `Config.DynamicSnow`     | Whether to dynamically add snow on the ground.      | `true`                                    |
 | `Config.MaxForecast`     | Number of weather intervals to queue up.            | `23` (24-hour forecast)                   |
 | `Config.WindDirection`   | Default wind direction when the resource starts.    | `0.0` (North)                             |
 | `Config.WindSpeed`       | Default base wind speed when the resource starts.   | `0.0`                                     |
