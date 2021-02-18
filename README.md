@@ -20,6 +20,18 @@
 |---|---|---|
 | [![Forecast and admin UI](https://i.imgur.com/Scn0z0Em.jpg)](https://imgur.com/Scn0z0E) | [![Region-specific weather](https://i.imgur.com/Loif9SMm.jpg)](https://imgur.com/Loif9SM) | [![Adjustable timescale](https://i.imgur.com/WkqHAs4m.jpg)](https://imgur.com/WkqHAs4) |
 
+## Installation
+
+1. Create a `weathersync` folder within your resources directory, for example, `resources/[local]/weathersync`.
+
+2. Copy the files from this repository into the `weathersync` folder.
+
+3. Add the following to your `server.cfg`:
+
+```
+start weathersync
+```
+
 ## Commands
 
 | Command        | Description                                               |
