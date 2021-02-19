@@ -1,3 +1,5 @@
+local MeanSeaLevel = 40
+
 local CurrentWeather = nil
 local CurrentWindDirection = 0.0
 local SnowOnGround = false
@@ -152,9 +154,23 @@ AddEventHandler('weatherSync:changeTime', function(hour, minute, second, transit
 	NetworkOverrideClockTime(hour, minute, second, transitionTime, freezeTime)
 end)
 
+function TranslateWindForAltitude(direction, speed)
+	local altitude = GetEntityCoords(PlayerPedId()).z
+
+	local multiplier = math.floor((altitude - MeanSeaLevel) / Config.WindShearInterval)
+
+	direction = (direction + multiplier * Config.WindShearDirection) % 360
+	speed = speed + multiplier * Config.WindShearSpeed
+
+	return direction, speed
+end
+
 AddEventHandler('weatherSync:changeWind', function(direction, speed)
+	direction, speed = TranslateWindForAltitude(direction, speed)
+
 	SetWindDirection(direction)
 	CurrentWindDirection = direction
+
 	SetWindSpeed(speed)
 end)
 
@@ -208,7 +224,7 @@ function UpdateForecast(forecast)
 	local tempStr = string.format('%d °%s', temperature, temperatureUnit)
 	local windStr = string.format('🌬️ %d %s %s', windSpeed, windSpeedUnit, GetCardinalDirection(CurrentWindDirection))
 
-	local altitudeSea = string.format('%.0f', pos.z - 40)
+	local altitudeSea = string.format('%.0f', pos.z - MeanSeaLevel)
 	local altitudeTerrain = string.format('%.0f', GetEntityHeightAboveGround(ped))
 
 	SendNUIMessage({

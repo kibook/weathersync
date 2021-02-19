@@ -45,6 +45,15 @@ Config.WindDirection = 0.0
 -- Default base wind speed when the resource starts
 Config.WindSpeed = 0.0
 
+-- Degrees by which wind direction changes at higher altitudes
+Config.WindShearDirection = 45
+
+-- Amount by which base wind speed increases at higher altitudes
+Config.WindShearSpeed = 1.0
+
+-- Interval in metres above sea level where wind direction/speed changes
+Config.WindShearInterval = 50.0
+
 -- Whether wind direction is frozen when the resource starts
 Config.WindIsFrozen = false
 
