@@ -155,12 +155,15 @@ AddEventHandler('weatherSync:changeTime', function(hour, minute, second, transit
 end)
 
 function TranslateWindForAltitude(direction, speed)
-	local altitude = GetEntityCoords(PlayerPedId()).z
+	local ped = PlayerPedId()
+	local altitudeSea = GetEntityCoords(ped).z - MeanSeaLevel
+	local altitudeTerrain = GetEntityHeightAboveGround(ped)
 
-	local multiplier = math.floor((altitude - MeanSeaLevel) / Config.WindShearInterval)
+	local directionMultiplier = math.floor(altitudeSea / Config.WindShearInterval)
+	local speedMultiplier = math.floor(altitudeTerrain / Config.WindShearInterval)
 
-	direction = (direction + multiplier * Config.WindShearDirection) % 360
-	speed = speed + multiplier * Config.WindShearSpeed
+	direction = (direction + directionMultiplier * Config.WindShearDirection) % 360
+	speed = speed + speedMultiplier * Config.WindShearSpeed
 
 	return direction, speed
 end

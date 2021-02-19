@@ -49,7 +49,7 @@ Config.WindSpeed = 0.0
 Config.WindShearDirection = 45
 
 -- Amount by which base wind speed increases at higher altitudes
-Config.WindShearSpeed = 1.0
+Config.WindShearSpeed = 2.0
 
 -- Interval in metres above sea level where wind direction/speed changes
 Config.WindShearInterval = 50.0
