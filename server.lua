@@ -385,14 +385,14 @@ RegisterCommand('mytime', function(source, args, raw)
 	local m = (args[2] and tonumber(args[2]) or 0)
 	local s = (args[3] and tonumber(args[3]) or 0)
 	local t = (args[4] and tonumber(args[4]) or 0)
-	TriggerClientEvent('weatherSync:setMyTime', h, m, s, t)
+	TriggerClientEvent('weatherSync:setMyTime', source, h, m, s, t)
 end, true)
 
 RegisterCommand('myweather', function(source, args, raw)
 	local weather = (args[1] and args[1] or CurrentWeather)
 	local transition = (args[2] and tonumber(args[2]) or 5.0)
 	local permanentSnow = args[3] == '1'
-	TriggerClientEvent('weatherSync:setMyWeather', weather, transition, permanentSnow)
+	TriggerClientEvent('weatherSync:setMyWeather', source, weather, transition, permanentSnow)
 end, true)
 
 exports('getTime', GetTime)
