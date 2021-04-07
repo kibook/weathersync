@@ -13,6 +13,9 @@ RegisterNetEvent('weatherSync:updateForecast')
 RegisterNetEvent('weatherSync:openAdminUi')
 RegisterNetEvent('weatherSync:updateAdminUi')
 RegisterNetEvent('weatherSync:toggleSync')
+RegisterNetEvent('weatherSync:setSyncEnabled')
+RegisterNetEvent('weatherSync:setMyTime')
+RegisterNetEvent('weatherSync:setMyWeather')
 
 function IsInSnowyRegion(x, y, z)
 	return (x <= -700.0 and y >= 1090.0) or (x <= -500.0 and y >= 2388.0)
@@ -244,10 +247,10 @@ end
 AddEventHandler('weatherSync:toggleForecast', function()
 	ForecastIsDisplayed = not ForecastIsDisplayed
 
-	CreateThread(function()
+	Citizen.CreateThread(function()
 		while ForecastIsDisplayed do
 			TriggerServerEvent('weatherSync:requestUpdatedForecast')
-			Wait(1000)
+			Citizen.Wait(1000)
 		end
 	end)
 
@@ -263,10 +266,10 @@ end)
 AddEventHandler('weatherSync:openAdminUi', function()
 	AdminUiIsOpen = true
 
-	CreateThread(function()
+	Citizen.CreateThread(function()
 		while AdminUiIsOpen do
 			TriggerServerEvent('weatherSync:requestUpdatedAdminUi')
-			Wait(1000)
+			Citizen.Wait(1000)
 		end
 	end)
 
@@ -337,24 +340,20 @@ function ToggleSync()
 	})
 end
 
-AddEventHandler('weatherSync:toggleSync', function(toggle)
+AddEventHandler('weatherSync:setSyncEnabled', function(toggle)
 	if SyncEnabled ~= toggle then
 		ToggleSync()
 	end
 end)
 
-RegisterCommand('weathersync', function(source, args, raw)
+AddEventHandler('weatherSync:toggleSync', function()
 	ToggleSync()
 end)
 
-RegisterCommand('myweather', function(source, args, raw)
+AddEventHandler('weatherSync:setMyWeather', function(weather, transition, permanentSnow)
 	if SyncEnabled then
 		ToggleSync()
 	end
-
-	local weather = (args[1] and args[1] or CurrentWeather)
-	local transition = (args[2] and tonumber(args[2]) or 5.0)
-	local permanentSnow = args[3] == '1'
 
 	if transition <= 0.0 then
 		transition = 0.1
@@ -369,22 +368,15 @@ RegisterCommand('myweather', function(source, args, raw)
 	end
 end)
 
-RegisterCommand('mytime', function(source, args, raw)
+AddEventHandler('weatherSync:setMyTime', function(h, m, s, t)
 	if SyncEnabled then
 		ToggleSync()
 	end
 
-	local h = (args[1] and tonumber(args[1]) or 0)
-	local m = (args[2] and tonumber(args[2]) or 0)
-	local s = (args[3] and tonumber(args[3]) or 0)
-	local t = (args[4] and tonumber(args[4]) or 0)
-
 	NetworkOverrideClockTime(h, m, s, t, true)
 end)
 
-CreateThread(function()
-	Wait(0)
-
+Citizen.CreateThread(function()
 	SetNuiFocus(false, false)
 
 	TriggerEvent('chat:addSuggestion', '/forecast', 'Toggle display of weather forecast', {})
