@@ -341,7 +341,7 @@ RegisterCommand('forecast', function(source, args, raw)
 		end
 		PrintMessage(source, {args = {'================'}})
 	end
-end, false)
+end, true)
 
 AddEventHandler('weatherSync:requestUpdatedForecast', function()
 	TriggerClientEvent('weatherSync:updateForecast', source, CreateForecast())
