@@ -51,7 +51,7 @@ Config.WindShearDirection = 45
 -- Amount by which base wind speed increases at higher altitudes
 Config.WindShearSpeed = 2.0
 
--- Interval in metres above sea level where wind direction/speed changes
+-- Interval in metres where wind direction/speed changes
 Config.WindShearInterval = 50.0
 
 -- Whether wind direction is frozen when the resource starts
