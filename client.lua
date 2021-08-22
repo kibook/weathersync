@@ -218,13 +218,13 @@ function UpdateForecast(forecast)
 		temperature = math.floor(GetTemperatureAtCoords(x, y, z))
 		temperatureUnit = 'C'
 
-		windSpeed = math.floor(GetWindSpeed())
+		windSpeed = math.floor(GetWindSpeed() * 3.6)
 		windSpeedUnit = 'kph'
 	else
 		temperature = math.floor(GetTemperatureAtCoords(x, y, z) * 9/5 + 32)
 		temperatureUnit = 'F'
 
-		windSpeed = math.floor(GetWindSpeed() * 0.621371)
+		windSpeed = math.floor(GetWindSpeed() * 3.6 * 0.621371)
 		windSpeedUnit = 'mph'
 	end
 	local tempStr = string.format('%d °%s', temperature, temperatureUnit)
