@@ -13,8 +13,11 @@ Config = {}
 -- second	0-59
 Config.Time = DHMSToTime(0, 6, 0, 0)
 
--- Default ratio of in-game seconds to real seconds. Standard game time is 30:1, or 1 in-game minute = 2 real seconds
+-- Default ratio of in-game seconds to real seconds. Standard game time is 30:1, or 1 in-game minute = 2 real seconds. A value of 0 means time will be synced with the real server time.
 Config.Timescale = 30
+
+-- If Config.Timescale is 0, offset the real server time by this many seconds.
+Config.RealTimeOffset = 0
 
 -- Whether time is frozen when the resource starts
 Config.TimeIsFrozen = false

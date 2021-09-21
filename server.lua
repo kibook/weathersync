@@ -420,10 +420,21 @@ Citizen.CreateThread(function()
 	while true do
 		Citizen.Wait(SyncDelay)
 
-		local tick = CurrentTimescale * (SyncDelay / 1000)
+		local tick
 
-		if not TimeIsFrozen then
-			CurrentTime = math.floor(CurrentTime + tick) % WeekLength
+		if Config.Timescale == 0 then
+			tick = SyncDelay / 1000
+
+			if not TimeIsFrozen then
+				local now = os.date("*t", os.time() + Config.RealTimeOffset)
+				CurrentTime = now.sec + now.min * 60 + now.hour * 3600 + (now.wday - 1) * DayLength
+			end
+		else
+			tick = CurrentTimescale * (SyncDelay / 1000)
+
+			if not TimeIsFrozen then
+				CurrentTime = math.floor(CurrentTime + tick) % WeekLength
+			end
 		end
 
 		if not WeatherIsFrozen then
