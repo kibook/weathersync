@@ -52,23 +52,23 @@ start weathersync
 
 | Variable                    | Description                                                    | Example                                   |
 |-----------------------------|----------------------------------------------------------------|-------------------------------------------|
-| `Config.Time`               | Default time when the resource starts.                         | `DHMSToTime(0, 6, 0, 0)` (Sun 06:00:00)   |
-| `Config.Timescale`          | Default timescale when the resource starts                     | `30.0` (30 in-game secs per real sec)     |
-| `Config.TimeIsFrozen`       | Whether time is frozen when the resource starts.               | `false`                                   |
-| `Config.Weather`            | Default weather when the resource starts.                      | `"sunny"`                                 |
-| `Config.WeatherInterval`    | How often the weather changes.                                 | `DHMSToTime(0, 1, 0, 0)` (1 in-game hour) |
-| `Config.WeatherIsFrozen`    | Whether weather is frozen when the resource starts.            | `false`                                   |
-| `Config.PermanentSnow`      | Whether to permanently add snow on the ground.                 | `false`                                   |
-| `Config.DynamicSnow`        | Whether to dynamically add snow on the ground.                 | `true`                                    |
-| `Config.MaxForecast`        | Number of weather intervals to queue up.                       | `23` (24-hour forecast)                   |
-| `Config.WindDirection`      | Default wind direction when the resource starts.               | `0.0` (North)                             |
-| `Config.WindSpeed`          | Default base wind speed when the resource starts.              | `0.0`                                     |
-| `Config.WindShearDirection` | Degrees by which wind direction changes at higher altitudes.   | `45`                                      |
-| `Config.WindShearSpeed`     | Amount by which base wind speed increases at higher altitudes. | `2.0`                                     |
-| `Config.WindShearInterval`  | Interval in metres where wind direction/speed changes.         | `50.0`                                    |
-| `Config.WindIsFrozen`       | Whether wind direction is frozen.                              | `false`                                   |
-| `Config.SyncDelay`          | How often in ms to sync with clients.                          | `5000`                                    |
-| `Config.WeatherPattern`     | A table describing the the weather pattern.                    | See [config.lua](config.lua)              |
+| `Config.time`               | Default time when the resource starts.                         | `DHMSToTime(0, 6, 0, 0)` (Sun 06:00:00)   |
+| `Config.timescale`          | Default timescale when the resource starts                     | `30.0` (30 in-game secs per real sec)     |
+| `Config.timeIsFrozen`       | Whether time is frozen when the resource starts.               | `false`                                   |
+| `Config.weather`            | Default weather when the resource starts.                      | `"sunny"`                                 |
+| `Config.weatherInterval`    | How often the weather changes.                                 | `DHMSToTime(0, 1, 0, 0)` (1 in-game hour) |
+| `Config.weatherIsFrozen`    | Whether weather is frozen when the resource starts.            | `false`                                   |
+| `Config.permanentSnow`      | Whether to permanently add snow on the ground.                 | `false`                                   |
+| `Config.dynamicSnow`        | Whether to dynamically add snow on the ground.                 | `true`                                    |
+| `Config.maxForecast`        | Number of weather intervals to queue up.                       | `23` (24-hour forecast)                   |
+| `Config.windDirection`      | Default wind direction when the resource starts.               | `0.0` (North)                             |
+| `Config.windSpeed`          | Default base wind speed when the resource starts.              | `0.0`                                     |
+| `Config.windShearDirection` | Degrees by which wind direction changes at higher altitudes.   | `45`                                      |
+| `Config.windShearSpeed`     | Amount by which base wind speed increases at higher altitudes. | `2.0`                                     |
+| `Config.windShearInterval`  | Interval in metres where wind direction/speed changes.         | `50.0`                                    |
+| `Config.windIsFrozen`       | Whether wind direction is frozen.                              | `false`                                   |
+| `Config.syncDelay`          | How often in ms to sync with clients.                          | `5000`                                    |
+| `Config.weatherPattern`     | A table describing the the weather pattern.                    | See [config.lua](config.lua)              |
 
 ## Exports
 
