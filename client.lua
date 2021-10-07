@@ -311,7 +311,9 @@ AddEventHandler("weathersync:changeWind", function(direction, speed)
 	SetWindDirection(direction)
 	currentWindDirection = direction
 
-	SetWindSpeed(speed)
+	if Config.isRDR then
+		SetWindSpeed(speed)
+	end
 end)
 
 AddEventHandler("weathersync:toggleForecast", function()

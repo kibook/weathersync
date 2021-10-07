@@ -56,10 +56,10 @@ function toggleForecast() {
 	toggleDisplay(document.querySelector('#forecast'), 'table');
 	toggleDisplay(document.querySelector('#sync'), 'block');
 	toggleDisplay(document.querySelector('#altimeter'), 'block');
+	toggleDisplay(document.querySelector('#wind'), 'block');
 
 	if (isRDR) {
 		toggleDisplay(document.querySelector('#temperature'), 'block');
-		toggleDisplay(document.querySelector('#wind'), 'block');
 	}
 }
 
