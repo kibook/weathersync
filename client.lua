@@ -275,6 +275,8 @@ AddEventHandler("weathersync:changeWeather", function(weather, transitionTime, p
 			currentWeather = translatedWeather
 		end
 	else
+		snowOnGround = permanentSnow or (Config.dynamicSnow and isSnowyWeather(weather))
+
 		if weather ~= currentWeather then
 			setWeather(weather, transitionTime)
 			currentWeather = weather
@@ -494,6 +496,30 @@ if not Config.isRDR then
 			else
 				Citizen.Wait(1000)
 			end
+		end
+	end)
+
+	Citizen.CreateThread(function()
+		while true do
+			ForceSnowPass(snowOnGround)
+			SetForceVehicleTrails(snowOnGround)
+			SetForcePedFootstepsTracks(snowOnGround)
+
+			if snowOnGround then
+				if not HasNamedPtfxAssetLoaded("core_snow") then
+					RequestNamedPtfxAsset("core_snow")
+
+					while not HasNamedPtfxAssetLoaded("core_snow") do
+						Citizen.Wait(0)
+					end
+				end
+
+				UseParticleFxAssetNextCall("core_snow")
+			else
+				RemoveNamedPtfxAsset("core_snow")
+			end
+
+			Citizen.Wait(1000)
 		end
 	end)
 end
