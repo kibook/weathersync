@@ -50,25 +50,29 @@ start weathersync
 
 ## Configuration
 
-| Variable                    | Description                                                    | Example                                   |
-|-----------------------------|----------------------------------------------------------------|-------------------------------------------|
-| `Config.time`               | Default time when the resource starts.                         | `DHMSToTime(0, 6, 0, 0)` (Sun 06:00:00)   |
-| `Config.timescale`          | Default timescale when the resource starts                     | `30` (30 in-game secs per real sec)     |
-| `Config.timeIsFrozen`       | Whether time is frozen when the resource starts.               | `false`                                   |
-| `Config.weather`            | Default weather when the resource starts.                      | `"sunny"`                                 |
-| `Config.weatherInterval`    | How often the weather changes.                                 | `DHMSToTime(0, 1, 0, 0)` (1 in-game hour) |
-| `Config.weatherIsFrozen`    | Whether weather is frozen when the resource starts.            | `false`                                   |
-| `Config.permanentSnow`      | Whether to permanently add snow on the ground.                 | `false`                                   |
-| `Config.dynamicSnow`        | Whether to dynamically add snow on the ground.                 | `true`                                    |
-| `Config.maxForecast`        | Number of weather intervals to queue up.                       | `23` (24-hour forecast)                   |
-| `Config.windDirection`      | Default wind direction when the resource starts.               | `0.0` (North)                             |
-| `Config.windSpeed`          | Default base wind speed when the resource starts.              | `0.0`                                     |
-| `Config.windShearDirection` | Degrees by which wind direction changes at higher altitudes.   | `45`                                      |
-| `Config.windShearSpeed`     | Amount by which base wind speed increases at higher altitudes. | `2.0`                                     |
-| `Config.windShearInterval`  | Interval in metres where wind direction/speed changes.         | `50.0`                                    |
-| `Config.windIsFrozen`       | Whether wind direction is frozen.                              | `false`                                   |
-| `Config.syncDelay`          | How often in ms to sync with clients.                          | `5000`                                    |
-| `Config.weatherPattern`     | A table describing the the weather pattern.                    | See [config.lua](config.lua)              |
+| Variable                         | Description                                                    | Example                                   |
+|----------------------------------|----------------------------------------------------------------|-------------------------------------------|
+| `Config.time`                    | Default time when the resource starts.                         | `DHMSToTime(0, 6, 0, 0)` (Sun 06:00:00)   |
+| `Config.timescale`               | Default timescale when the resource starts                     | `30` (30 in-game secs per real sec)       |
+| `Config.realTimeOffset`          | Offset of the real server time in seconds.                     | `0`                                       |
+| `Config.timeIsFrozen`            | Whether time is frozen when the resource starts.               | `false`                                   |
+| `Config.weather`                 | Default weather when the resource starts.                      | `"sunny"`                                 |
+| `Config.weatherInterval`         | How often the weather changes.                                 | `DHMSToTime(0, 1, 0, 0)` (1 in-game hour) |
+| `Config.weatherIsFrozen`         | Whether weather is frozen when the resource starts.            | `false`                                   |
+| `Config.permanentSnow`           | Whether to permanently add snow on the ground.                 | `false`                                   |
+| `Config.dynamicSnow`             | Whether to dynamically add snow on the ground.                 | `true`                                    |
+| `Config.maxForecast`             | Number of weather intervals to queue up.                       | `23` (24-hour forecast)                   |
+| `Config.windDirection`           | Default wind direction when the resource starts.               | `0.0` (North)                             |
+| `Config.windSpeed`               | Default base wind speed when the resource starts.              | `0.0`                                     |
+| `Config.windShearDirection`      | Degrees by which wind direction changes at higher altitudes.   | `45`                                      |
+| `Config.windShearSpeed`          | Amount by which base wind speed increases at higher altitudes. | `2.0`                                     |
+| `Config.windShearInterval`       | Interval in metres where wind direction/speed changes.         | `50.0`                                    |
+| `Config.windIsFrozen`            | Whether wind direction is frozen.                              | `false`                                   |
+| `Config.permanentSnow`           | Whether to add snow on the ground permanently.                 | `false`                                   |
+| `Config.dynamicSnow`             | Whether to add snow on the ground dynamically.                 | `false`                                   |
+| `Config.syncDelay`               | How often in ms to sync with clients.                          | `5000`                                    |
+| `Config.weatherPattern`          | A table describing the the weather pattern.                    | See [config.lua](config.lua)              |
+| `Config.disableSnowOnCayoPerico` | Disables permanent and dynamic snow while on Cayo Perico.      | `false`                                   |
 
 ## Exports
 

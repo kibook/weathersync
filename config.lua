@@ -224,3 +224,6 @@ Config.defaultRdrWeatherPattern = {
 }
 
 Config.weatherPattern = Config.isRDR and Config.defaultRdrWeatherPattern or Config.defaultGtaWeatherPattern
+
+-- Disable snowy weather and snow on ground when on Cayo Perico
+Config.disableSnowOnCayoPerico = false

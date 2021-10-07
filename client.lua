@@ -73,73 +73,86 @@ local function isInGuarma(x, y, z)
 	return x >= 0 and y <= -4096
 end
 
-local function translateWeatherForRegion(weather)
-	local x, y, z = table.unpack(GetEntityCoords(PlayerPedId()))
-	local temp = GetTemperatureAtCoords(x, y, z)
+local function isInCayoPerico(x, y, z)
+	return x >= 2000 and y <= -3500 and x <= 6500 and y >= -7000
+end
 
-	if weather == "rain" then
-		if isInSnowyRegion(x, y, z) then
-			return "snow", true
-		elseif isInNorthernRegion(x, y, z) and temp < 0.0 then
-			return "snow"
-		elseif isInDesertRegion(x, y, z) then
-			return "thunder"
+local function translateWeatherForRegion(weather, x, y, z)
+	if Config.isRDR then
+		local temp = GetTemperatureAtCoords(x, y, z)
+
+		if weather == "rain" then
+			if isInSnowyRegion(x, y, z) then
+				return "snow"
+			elseif isInNorthernRegion(x, y, z) and temp < 0.0 then
+				return "snow"
+			elseif isInDesertRegion(x, y, z) then
+				return "thunder"
+			end
+		elseif weather == "thunderstorm" then
+			if isInSnowyRegion(x, y, z) then
+				return "blizzard"
+			elseif isInNorthernRegion(x, y, z) and temp < 0.0 then
+				return "blizzard"
+			elseif isInDesertRegion(x, y, z) then
+				return "rain"
+			end
+		elseif weather == "hurricane" then
+			if isInSnowyRegion(x, y, z) then
+				return "whiteout"
+			elseif isInNorthernRegion(x, y, z) and temp < 0.0 then
+				return "whiteout"
+			elseif isInDesertRegion(x, y, z) then
+				return "sandstorm"
+			end
+		elseif weather == "drizzle" then
+			if isInSnowyRegion(x, y, z) then
+				return "snowlight"
+			elseif isInNorthernRegion(x, y, z) and temp < 0.0 then
+				return "snowlight"
+			elseif isInDesertRegion(x, y, z) then
+				return "sunny"
+			end
+		elseif weather == "shower" then
+			if isInSnowyRegion(x, y, z) then
+				return "groundblizzard"
+			elseif isInNorthernRegion(x, y, z) and temp < 0.0 then
+				return "groundblizzard"
+			elseif isInDesertRegion(x, y, z) then
+				return "sunny"
+			end
+		elseif weather == "fog" then
+			if isInSnowyRegion(x, y, z) then
+				return "snowlight"
+			end
+		elseif weather == "misty" then
+			if isInSnowyRegion(x, y, z) then
+				return "snowlight"
+			end
+		elseif weather == "snow" then
+			if isInGuarma(x, y, z) then
+				return "sunny"
+			end
+		elseif weather == "snowlight" then
+			if isInGuarma(x, y, z) then
+				return "sunny"
+			end
+		elseif weather == "blizzard" then
+			if isInGuarma(x, y, z) then
+				return "sunny"
+			end
 		end
-	elseif weather == "thunderstorm" then
-		if isInSnowyRegion(x, y, z) then
-			return "blizzard", true
-		elseif isInNorthernRegion(x, y, z) and temp < 0.0 then
-			return "blizzard"
-		elseif isInDesertRegion(x, y, z) then
-			return "rain"
-		end
-	elseif weather == "hurricane" then
-		if isInSnowyRegion(x, y, z) then
-			return "whiteout", true
-		elseif isInNorthernRegion(x, y, z) and temp < 0.0 then
-			return "whiteout"
-		elseif isInDesertRegion(x, y, z) then
-			return "sandstorm"
-		end
-	elseif weather == "drizzle" then
-		if isInSnowyRegion(x, y, z) then
-			return "snowlight", true
-		elseif isInNorthernRegion(x, y, z) and temp < 0.0 then
-			return "snowlight"
-		elseif isInDesertRegion(x, y, z) then
-			return "sunny"
-		end
-	elseif weather == "shower" then
-		if isInSnowyRegion(x, y, z) then
-			return "groundblizzard", true
-		elseif isInNorthernRegion(x, y, z) and temp < 0.0 then
-			return "groundblizzard"
-		elseif isInDesertRegion(x, y, z) then
-			return "sunny"
-		end
-	elseif weather == "fog" then
-		if isInSnowyRegion(x, y, z) then
-			return "snowlight", true
-		end
-	elseif weather == "misty" then
-		if isInSnowyRegion(x, y, z) then
-			return "snowlight", true
-		end
-	elseif weather == "snow" then
-		if isInGuarma(x, y, z) then
-			return "sunny"
-		end
-	elseif weather == "snowlight" then
-		if isInGuarma(x, y, z) then
-			return "sunny"
-		end
-	elseif weather == "blizzard" then
-		if isInGuarma(x, y, z) then
-			return "sunny"
+	else
+		if Config.disableSnowOnCayoPerico then
+			if weather == "blizzard" or weather == "snow" or weather == "snowlight" or weather == "xmas" then
+				if isInCayoPerico(x, y, z) then
+					return "clear"
+				end
+			end
 		end
 	end
 
-	return weather, isInSnowyRegion(x, y, z)
+	return weather
 end
 
 local function isSnowyWeather(weather)
@@ -163,6 +176,10 @@ end
 local function updateForecast(forecast)
 	local h24 = Config.isRDR and ShouldUse_24HourClock() or true
 
+	local ped = PlayerPedId()
+	local pos = GetEntityCoords(ped)
+	local x, y, z = table.unpack(pos)
+
 	for i = 1, #forecast do
 		if h24 then
 			forecast[i].time = string.format(
@@ -178,18 +195,11 @@ local function updateForecast(forecast)
 				forecast[i].hour > 12 and "PM" or "AM")
 		end
 
-		if Config.isRDR then
-			forecast[i].weather = translateWeatherForRegion(forecast[i].weather)
-		end
-
+		forecast[i].weather = translateWeatherForRegion(forecast[i].weather, x, y, z)
 		forecast[i].wind = GetCardinalDirection(forecast[i].wind)
 	end
 
-	local ped = PlayerPedId()
-	local pos = GetEntityCoords(ped)
-
 	-- Get local temperature
-	local x, y, z = table.unpack(pos)
 	local metric = Config.isRDR and ShouldUseMetricTemperature() or ShouldUseMetricMeasurements()
 	local temperature
 	local temperatureUnit
@@ -249,14 +259,18 @@ AddEventHandler("weathersync:changeWeather", function(weather, transitionTime, p
 		return
 	end
 
-	if Config.isRDR then
-		local translatedWeather, inSnowyRegion = translateWeatherForRegion(weather)
+	local x, y, z = table.unpack(GetEntityCoords(PlayerPedId()))
 
+	local translatedWeather = translateWeatherForRegion(weather, x, y, z)
+
+	if Config.isRDR then
 		if not currentWeather then
 			transitionTime = 1.0
 			SetSnowCoverageType(0)
 			snowOnGround = false
 		end
+
+		local inSnowyRegion = isInSnowyRegion(x, y, z)
 
 		if permanentSnow or (Config.dynamicSnow and (inSnowyRegion or isSnowyWeather(translatedWeather))) then
 			if not snowOnGround then
@@ -269,18 +283,13 @@ AddEventHandler("weathersync:changeWeather", function(weather, transitionTime, p
 				SetSnowCoverageType(0)
 			end
 		end
-
-		if translatedWeather ~= currentWeather then
-			setWeather(translatedWeather, transitionTime)
-			currentWeather = translatedWeather
-		end
 	else
-		snowOnGround = permanentSnow or (Config.dynamicSnow and isSnowyWeather(weather))
+		snowOnGround = (permanentSnow and not (Config.disableSnowOnCayoPerico and isInCayoPerico(x, y, z))) or (Config.dynamicSnow and isSnowyWeather(translatedWeather))
+	end
 
-		if weather ~= currentWeather then
-			setWeather(weather, transitionTime)
-			currentWeather = weather
-		end
+	if translatedWeather ~= currentWeather then
+		setWeather(translatedWeather, transitionTime)
+		currentWeather = translatedWeather
 	end
 end)
 
