@@ -1,4 +1,4 @@
-# RedM weather and time sync
+# FiveM/RedM weather and time sync
 
 ## Features
 
@@ -53,7 +53,7 @@ start weathersync
 | Variable                    | Description                                                    | Example                                   |
 |-----------------------------|----------------------------------------------------------------|-------------------------------------------|
 | `Config.time`               | Default time when the resource starts.                         | `DHMSToTime(0, 6, 0, 0)` (Sun 06:00:00)   |
-| `Config.timescale`          | Default timescale when the resource starts                     | `30.0` (30 in-game secs per real sec)     |
+| `Config.timescale`          | Default timescale when the resource starts                     | `30` (30 in-game secs per real sec)     |
 | `Config.timeIsFrozen`       | Whether time is frozen when the resource starts.               | `false`                                   |
 | `Config.weather`            | Default weather when the resource starts.                      | `"sunny"`                                 |
 | `Config.weatherInterval`    | How often the weather changes.                                 | `DHMSToTime(0, 1, 0, 0)` (1 in-game hour) |
