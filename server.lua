@@ -102,11 +102,11 @@ local function printMessage(target, message)
 	end
 end
 
-local function setWeather(weather, transition, freeze, permanentSnow)
-	TriggerClientEvent("weathersync:changeWeather", -1, weather, transition, permanentSnow)
+local function setWeather(weather, transition, freeze, permSnow)
+	TriggerClientEvent("weathersync:changeWeather", -1, weather, transition, permSnow)
 	currentWeather = weather
 	weatherIsFrozen = freeze
-	permanentSnow = permanentSnow
+	permanentSnow = permSnow
 	generateForecast()
 end
 
@@ -161,7 +161,7 @@ local function resetWeatherPattern()
 end
 
 local function setTime(d, h, m, s, t, f)
-	TriggerClientEvent("weathersync:changeTime", -1, h, m, s, t, true)
+	TriggerClientEvent("weathersync:changeTime", -1, h, m, s, t, f)
 	currentTime = DHMSToTime(d, h, m, s)
 	timeIsFrozen = f
 end
@@ -177,6 +177,7 @@ local function getTime()
 end
 
 local function setTimescale(scale)
+	TriggerClientEvent("weathersync:changeTimescale", -1, scale)
 	currentTimescale = scale
 end
 
@@ -237,11 +238,16 @@ local function syncTime(player, tick)
 	-- Ensure time doesn"t wrap around when transitioning from ~23:59:59 to ~00:00:00
 	local timeTransition = ((dayLength - (currentTime % dayLength) + tick) % dayLength <= tick and 0 or syncDelay)
 	local day, hour, minute, second = TimeToDHMS(currentTime)
-	TriggerClientEvent("weathersync:changeTime", player, hour, minute, second, timeTransition, false)
+	TriggerClientEvent("weathersync:changeTime", player, hour, minute, second, timeTransition, timeIsFrozen)
+end
+
+local function syncTimescale(player)
+	TriggerClientEvent("weathersync:changeTimescale", player, currentTimescale)
 end
 
 local function syncWeather(player)
-	TriggerClientEvent("weathersync:changeWeather", player, currentWeather, weatherInterval / currentTimescale / 4, permanentSnow)
+	local scale = currentTimescale > 0 and currentTimescale or 1
+	TriggerClientEvent("weathersync:changeWeather", player, currentWeather, weatherInterval / scale / 4, permanentSnow)
 end
 
 local function syncWind(player)
@@ -290,6 +296,7 @@ AddEventHandler("weathersync:init", function()
 	syncTime(source, 0)
 	syncWeather(source)
 	syncWind(source)
+	syncTimescale(source)
 end)
 
 RegisterCommand("weather", function(source, args, raw)
@@ -302,7 +309,7 @@ RegisterCommand("weather", function(source, args, raw)
 		transition = 0.1
 	end
 
-	if contains(WeatherTypes, weather) then
+	if contains(Config.weatherTypes, weather) then
 		setWeather(weather, transition + 0.0, freeze, permanentSnow)
 	else
 		printMessage(source, {color = {255, 0, 0}, args = {"Error", "Unknown weather type: " .. weather}})
@@ -396,7 +403,7 @@ Citizen.CreateThread(function()
 	while true do
 		local tick
 
-		if Config.timescale == 0 then
+		if currentTimescale == 0 then
 			tick = syncDelay / 1000
 
 			if not timeIsFrozen then
@@ -433,6 +440,7 @@ Citizen.CreateThread(function()
 		syncTime(-1, tick)
 		syncWeather(-1)
 		syncWind(-1)
+		syncTimescale(-1)
 
 		Citizen.Wait(syncDelay)
 	end

@@ -1,4 +1,4 @@
-local meanSeaLevel = 40
+local meanSeaLevel = Config.isRDR and 40.0 or 0.0
 
 local currentWeather = nil
 local currentWindDirection = 0.0
@@ -8,8 +8,12 @@ local syncEnabled = true
 local forecastIsDisplayed = false
 local adminUiIsOpen = false
 
+local currentTime
+local currentTimescale = Config.timescale
+
 RegisterNetEvent("weathersync:changeWeather")
 RegisterNetEvent("weathersync:changeTime")
+RegisterNetEvent("weathersync:changeTimescale")
 RegisterNetEvent("weathersync:changeWind")
 RegisterNetEvent("weathersync:toggleForecast")
 RegisterNetEvent("weathersync:updateForecast")
@@ -20,16 +24,37 @@ RegisterNetEvent("weathersync:setSyncEnabled")
 RegisterNetEvent("weathersync:setMyTime")
 RegisterNetEvent("weathersync:setMyWeather")
 
-local function SetWeatherType(weatherHash, p1, p2, overrideNetwork, transitionTime, p5)
-	Citizen.InvokeNative(0x59174F1AFE095B5A, weatherHash, true, false, true, transitionTime, false)
-end
-
 local function SetSnowCoverageType(type)
 	return Citizen.InvokeNative(0xF02A9C330BBFC5C7, type)
 end
 
-local function NetworkOverrideClockTime(hour, minute, second, transitionTime, freezeTime)
-	Citizen.InvokeNative(0x669E223E64B1903C, hour, minute, second, transitionTime, freezeTime)
+local function setWeather(weatherType, transitionTime)
+	if Config.isRDR then
+		Citizen.InvokeNative(0x59174F1AFE095B5A, GetHashKey(weatherType), true, false, true, transitionTime, false)
+	else
+		SetWeatherOwnedByNetwork(false)
+		SetWeatherTypeOvertimePersist(weatherType, transitionTime)
+	end
+end
+
+local function setTime(hour, minute, second, transitionTime, freeze)
+	if Config.isRDR then
+		Citizen.InvokeNative(0x669E223E64B1903C, hour, minute, second, transitionTime, true)
+	else
+		if currentTimescale == 30 then
+			currentTime = freeze and {hour = hour, minute = minute}
+
+			local h = GetClockHours()
+			local m = GetClockMinutes()
+			local s = GetClockSeconds()
+
+			if hour ~= h or (math.abs(minute - m) > 5) then
+				NetworkOverrideClockTime(hour, minute, 0)
+			end
+		else
+			currentTime = {hour = hour, minute = minute}
+		end
+	end
 end
 
 local function isInSnowyRegion(x, y, z)
@@ -136,7 +161,7 @@ local function translateWindForAltitude(direction, speed)
 end
 
 local function updateForecast(forecast)
-	local h24 = ShouldUse_24HourClock()
+	local h24 = Config.isRDR and ShouldUse_24HourClock() or true
 
 	for i = 1, #forecast do
 		if h24 then
@@ -153,7 +178,10 @@ local function updateForecast(forecast)
 				forecast[i].hour > 12 and "PM" or "AM")
 		end
 
-		forecast[i].weather = translateWeatherForRegion(forecast[i].weather)
+		if Config.isRDR then
+			forecast[i].weather = translateWeatherForRegion(forecast[i].weather)
+		end
+
 		forecast[i].wind = GetCardinalDirection(forecast[i].wind)
 	end
 
@@ -162,29 +190,37 @@ local function updateForecast(forecast)
 
 	-- Get local temperature
 	local x, y, z = table.unpack(pos)
-	local metric = ShouldUseMetricTemperature()
+	local metric = Config.isRDR and ShouldUseMetricTemperature() or ShouldUseMetricMeasurements()
 	local temperature
 	local temperatureUnit
 	local windSpeed
 	local windSpeedUnit
-	if metric then
-		temperature = math.floor(GetTemperatureAtCoords(x, y, z))
-		temperatureUnit = "C"
+	local tempStr
 
+	if Config.isRDR then
+		if metric then
+			temperature = math.floor(GetTemperatureAtCoords(x, y, z))
+			temperatureUnit = "C"
+		else
+			temperature = math.floor(GetTemperatureAtCoords(x, y, z) * 9/5 + 32)
+			temperatureUnit = "F"
+		end
+
+		tempStr = string.format("%d °%s", temperature, temperatureUnit)
+	end
+
+	if metric then
 		windSpeed = math.floor(GetWindSpeed() * 3.6)
 		windSpeedUnit = "kph"
 	else
-		temperature = math.floor(GetTemperatureAtCoords(x, y, z) * 9/5 + 32)
-		temperatureUnit = "F"
-
 		windSpeed = math.floor(GetWindSpeed() * 3.6 * 0.621371)
 		windSpeedUnit = "mph"
 	end
-	local tempStr = string.format("%d °%s", temperature, temperatureUnit)
+
 	local windStr = string.format("🌬️ %d %s %s", windSpeed, windSpeedUnit, GetCardinalDirection(currentWindDirection))
 
-	local altitudeSea = string.format("%.0f", pos.z - meanSeaLevel)
-	local altitudeTerrain = string.format("%.0f", GetEntityHeightAboveGround(ped))
+	local altitudeSea = string.format("%d", math.floor(pos.z - meanSeaLevel))
+	local altitudeTerrain = string.format("%d", math.floor(GetEntityHeightAboveGround(ped)))
 
 	SendNUIMessage({
 		action = "updateForecast",
@@ -213,29 +249,36 @@ AddEventHandler("weathersync:changeWeather", function(weather, transitionTime, p
 		return
 	end
 
-	local translatedWeather, inSnowyRegion = translateWeatherForRegion(weather)
+	if Config.isRDR then
+		local translatedWeather, inSnowyRegion = translateWeatherForRegion(weather)
 
-	if not currentWeather then
-		transitionTime = 1.0
-		SetSnowCoverageType(0)
-		snowOnGround = false
-	end
+		if not currentWeather then
+			transitionTime = 1.0
+			SetSnowCoverageType(0)
+			snowOnGround = false
+		end
 
-	if permanentSnow or (Config.dynamicSnow and (inSnowyRegion or isSnowyWeather(translatedWeather))) then
-		if not snowOnGround then
-			snowOnGround = true
-			SetSnowCoverageType(3)
+		if permanentSnow or (Config.dynamicSnow and (inSnowyRegion or isSnowyWeather(translatedWeather))) then
+			if not snowOnGround then
+				snowOnGround = true
+				SetSnowCoverageType(3)
+			end
+		else
+			if snowOnGround then
+				snowOnGround = false
+				SetSnowCoverageType(0)
+			end
+		end
+
+		if translatedWeather ~= currentWeather then
+			setWeather(translatedWeather, transitionTime)
+			currentWeather = translatedWeather
 		end
 	else
-		if snowOnGround then
-			snowOnGround = false
-			SetSnowCoverageType(0)
+		if weather ~= currentWeather then
+			setWeather(weather, transitionTime)
+			currentWeather = weather
 		end
-	end
-
-	if translatedWeather ~= currentWeather then
-		SetWeatherType(GetHashKey(translatedWeather), true, false, true, transitionTime, false)
-		currentWeather = translatedWeather
 	end
 end)
 
@@ -244,7 +287,11 @@ AddEventHandler("weathersync:changeTime", function(hour, minute, second, transit
 		return
 	end
 
-	NetworkOverrideClockTime(hour, minute, second, transitionTime, freezeTime)
+	setTime(hour, minute, second, transitionTime, freezeTime)
+end)
+
+AddEventHandler("weathersync:changeTimescale", function(scale)
+	currentTimescale = scale
 end)
 
 AddEventHandler("weathersync:changeWind", function(direction, speed)
@@ -295,7 +342,7 @@ AddEventHandler("weathersync:updateAdminUi", function(weather, time, timescale, 
 
 	SendNUIMessage({
 		action = "updateAdminUi",
-		weatherTypes = json.encode(WeatherTypes),
+		weatherTypes = json.encode(Config.weatherTypes),
 		weather = weather,
 		day = d,
 		hour = h,
@@ -306,6 +353,10 @@ AddEventHandler("weathersync:updateAdminUi", function(weather, time, timescale, 
 		windDirection = windDirection,
 		syncDelay = syncDelay
 	})
+end)
+
+RegisterNUICallback("getGameName", function(data, cb)
+	cb({gameName = Config.isRDR and "rdr3" or "gta5"})
 end)
 
 RegisterNUICallback("setTime", function(data, cb)
@@ -358,7 +409,7 @@ AddEventHandler("weathersync:setMyWeather", function(weather, transition, perman
 		transition = 0.1
 	end
 
-	SetWeatherType(GetHashKey(weather), true, false, true, transition, false)
+	setWeather(weather, transition)
 
 	if permanentSnow then
 		SetSnowCoverageType(3)
@@ -372,7 +423,11 @@ AddEventHandler("weathersync:setMyTime", function(h, m, s, t)
 		toggleSync()
 	end
 
-	NetworkOverrideClockTime(h, m, s, t, true)
+	if not Config.isRDR then
+		currentTime = {hour = h, minute = m}
+	end
+
+	setTime(h, m, s, t, true)
 end)
 
 Citizen.CreateThread(function()
@@ -429,3 +484,16 @@ Citizen.CreateThread(function()
 
 	TriggerServerEvent("weathersync:init")
 end)
+
+if not Config.isRDR then
+	Citizen.CreateThread(function()
+		while true do
+			if currentTime then
+				NetworkOverrideClockTime(currentTime.hour, currentTime.minute, 0)
+				Citizen.Wait(5)
+			else
+				Citizen.Wait(1000)
+			end
+		end
+	end)
+end

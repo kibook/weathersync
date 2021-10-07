@@ -1,4 +1,22 @@
-WeatherTypes = {
+GTAVWeatherTypes = {
+	"blizzard",
+	"clear",
+	"clearing",
+	"clouds",
+	"extrasunny",
+	"foggy",
+	"halloween",
+	"neutral",
+	"overcast",
+	"rain",
+	"smog",
+	"snow",
+	"snowlight",
+	"thunder",
+	"xmas"
+}
+
+RDR2WeatherTypes = {
 	"blizzard",
 	"clouds",
 	"drizzle",

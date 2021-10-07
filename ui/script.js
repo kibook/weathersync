@@ -1,7 +1,25 @@
-const weatherIcons = {
+const gtaWeatherIcons = {
+	blizzard:       "❄️",
+	clear:          "☀️",
+	clearing:       "🌦️",
+	clouds:         "⛅",
+	extrasunny:     "☀️",
+	foggy:          "🌫️",
+	halloween:      "🎃",
+	neutral:        "🌧️",
+	overcast:       "☁️",
+	rain:           "🌧️",
+	smog:           "🌫️",
+	snow:           "🌨️",
+	snowlight:      "🌨️",
+	thunder:        "⛈️",
+	xmas:           "🎄"
+};
+
+const rdrWeatherIcons = {
 	blizzard:       "❄️",
 	clouds:         "⛅",
-	drizzle:        "🌧️",
+	drizzle:        "🌦️",
 	fog:            "🌫️",
 	groundblizzard: "❄️",
 	hail:           "🌨️",
@@ -22,6 +40,10 @@ const weatherIcons = {
 	whiteout:       "❄️"
 };
 
+var weatherIcons = {};
+
+var isRDR = false;
+
 function toggleDisplay(e, display) {
 	if (e.style.display == display) {
 		e.style.display = 'none';
@@ -32,10 +54,13 @@ function toggleDisplay(e, display) {
 
 function toggleForecast() {
 	toggleDisplay(document.querySelector('#forecast'), 'table');
-	toggleDisplay(document.querySelector('#temperature'), 'block');
-	toggleDisplay(document.querySelector('#wind'), 'block');
 	toggleDisplay(document.querySelector('#sync'), 'block');
 	toggleDisplay(document.querySelector('#altimeter'), 'block');
+
+	if (isRDR) {
+		toggleDisplay(document.querySelector('#temperature'), 'block');
+		toggleDisplay(document.querySelector('#wind'), 'block');
+	}
 }
 
 function dayOfWeek(day) {
@@ -74,7 +99,7 @@ function updateForecast(data) {
 		
 		var weather = document.createElement('div');
 		weather.className = 'forecast-weather';
-		weather.innerHTML = weatherIcons[forecastData[i].weather];
+		weather.innerHTML = weatherIcons[forecastData[i].weather] || forecastData[i].weather;
 
 		var wind = document.createElement('div');
 		wind.className = 'forecast-wind';
@@ -156,6 +181,16 @@ window.addEventListener('message', function (event) {
 });
 
 window.addEventListener('load', function() {
+	fetch(`https://${GetParentResourceName()}/getGameName`).then(resp => resp.json()).then(resp => {
+		if (resp.gameName == "rdr3") {
+			isRDR = true;
+			weatherIcons = rdrWeatherIcons;
+		} else {
+			isRDR = false;
+			weatherIcons = gtaWeatherIcons;
+		}
+	});
+
 	document.querySelector('#apply-time-btn').addEventListener('click', function(event) {
 		var day = document.querySelector('#new-day');
 		var hour = document.querySelector('#new-hour');

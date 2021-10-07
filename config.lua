@@ -1,5 +1,15 @@
 Config = {}
 
+-- Determine if game is GTA V or RDR 2
+if IsDuplicityVersion() then
+	Config.isRDR = GetConvar("gamename", "gta5") == "rdr3"
+else
+	Config.isRDR = not TerraingridActivate
+end
+
+-- Select relevant list of valid weather types
+Config.weatherTypes = Config.isRDR and RDR2WeatherTypes or GTAVWeatherTypes
+
 -- Default time when the resource starts
 --
 -- Can be specified in seconds out of a week (0-604799) or with the DHMSToTime
@@ -23,7 +33,7 @@ Config.realTimeOffset = 0
 Config.timeIsFrozen = false
 
 -- Default weather when the resource starts
-Config.weather = "sunny"
+Config.weather = Config.isRDR and "sunny" or "clear"
 
 -- The interval (in-game time) between weather changes
 Config.weatherInterval = DHMSToTime(0, 1, 0, 0)
@@ -63,7 +73,7 @@ Config.windIsFrozen = false
 -- How often in milliseconds to sync with clients
 Config.syncDelay = 5000
 
--- The following table describes the weather pattern of the world. For every type of weather that may occur, the types of weather that may follow are given with a number representing the percentage of their likeliness. For example:
+-- The following tables describe the weather pattern of the world. For every type of weather that may occur, the types of weather that may follow are given with a number representing the percentage of their likeliness. For example:
 --
 --     ["sunny"] = {
 --         ["sunny"] = 50
@@ -73,7 +83,60 @@ Config.syncDelay = 5000
 -- means that when the weather is sunny, the next stage is 50% likely to be sunny or 50% likely to be cloudy.
 --
 -- All the numbers for the next stages must add up to 100.
-Config.weatherPattern = {
+
+Config.defaultGtaWeatherPattern = {
+	["clear"] = {
+		["clear"]      = 50,
+		["clouds"]     = 30,
+		["extrasunny"] = 20
+	},
+
+	["clouds"] = {
+		["clouds"]   = 30,
+		["clear"]    = 40,
+		["foggy"]    = 10,
+		["overcast"] = 20
+	},
+
+	["foggy"] = {
+		["foggy"]    = 10,
+		["clouds"]   = 50,
+		["overcast"] = 40
+	},
+
+	["overcast"] = {
+		["overcast"] = 5,
+		["clearing"] = 70,
+		["rain"]     = 25,
+	},
+
+	["clearing"] = {
+		["clearing"] = 10,
+		["overcast"] = 10,
+		["rain"]     = 20,
+		["clouds"]   = 60
+	},
+
+	["rain"] = {
+		["rain"]     = 10,
+		["overcast"] = 20,
+		["clearing"] = 55,
+		["thunder"]  = 15
+	},
+
+	["thunder"] = {
+		["thunder"]  = 30,
+		["rain"]     = 40,
+		["clearing"] = 30
+	},
+
+	["extrasunny"] = {
+		["extrasunny"] = 25,
+		["clear"]      = 75
+	}
+}
+
+Config.defaultRdrWeatherPattern = {
 	["sunny"] = {
 		["sunny"]  = 60,
 		["clouds"] = 40
@@ -159,3 +222,5 @@ Config.weatherPattern = {
 		["overcastdark"] = 85
 	}
 }
+
+Config.weatherPattern = Config.isRDR and Config.defaultRdrWeatherPattern or Config.defaultGtaWeatherPattern
