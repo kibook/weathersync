@@ -13,7 +13,7 @@ const gtaWeatherIcons = {
 	snow:           "🌨️",
 	snowlight:      "🌨️",
 	thunder:        "⛈️",
-	xmas:           "🎄"
+	xmas:           "🌨️"
 };
 
 const rdrWeatherIcons = {
