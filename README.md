@@ -1,6 +1,6 @@
 # FiveM/RedM weather and time sync
 
-## Features
+# Features
 
 - Syncs time and weather for all players
 
@@ -14,13 +14,13 @@
 
 - Players can temporarily disable sync and set local time/weather
 
-## Examples
+# Examples
 
 | Forecast and admin UI | Region-specific weather | Adjustable timescale |
 |---|---|---|
 | [![Forecast and admin UI](https://i.imgur.com/Scn0z0Em.jpg)](https://imgur.com/Scn0z0E) | [![Region-specific weather](https://i.imgur.com/Loif9SMm.jpg)](https://imgur.com/Loif9SM) | [![Adjustable timescale](https://i.imgur.com/WkqHAs4m.jpg)](https://imgur.com/WkqHAs4) |
 
-## Installation
+# Installation
 
 1. Create a `weathersync` folder within your resources directory, for example, `resources/[local]/weathersync`.
 
@@ -33,7 +33,7 @@ exec resources/[local]/weathersync/permissions.cfg
 start weathersync
 ```
 
-## Commands
+# Commands
 
 | Command        | Description                                               |
 |----------------|-----------------------------------------------------------|
@@ -48,7 +48,7 @@ start weathersync
 | `/weatherui`   | Opens the admin UI for changing the time/weather/wind.    |
 | `/wind`        | Set the wind direction and base speed.                    |
 
-## Configuration
+# Configuration
 
 | Variable                         | Description                                                    | Example                                   |
 |----------------------------------|----------------------------------------------------------------|-------------------------------------------|
@@ -74,7 +74,9 @@ start weathersync
 | `Config.weatherPattern`          | A table describing the the weather pattern.                    | See [config.lua](config.lua)              |
 | `Config.disableSnowOnCayoPerico` | Disables permanent and dynamic snow while on Cayo Perico.      | `false`                                   |
 
-## Exports
+# Exports
+
+## Server-side
 
 ### getTime
 Get the current server time.
@@ -252,3 +254,16 @@ A table containing the weather forecast:
 	...
 }
 ```
+
+## Client-side
+
+### isSnowOnGround
+Check if there is snow on the ground.
+
+#### Usage
+```lua
+exports.weathersync:isSnowOnGround()
+```
+
+#### Return value
+true if there is snow on the ground, false if there is not.

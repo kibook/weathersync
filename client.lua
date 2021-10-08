@@ -254,6 +254,10 @@ local function toggleSync()
 	})
 end
 
+exports("isSnowOnGround", function()
+	return snowOnGround
+end)
+
 AddEventHandler("weathersync:changeWeather", function(weather, transitionTime, permanentSnow)
 	if not syncEnabled then
 		return
