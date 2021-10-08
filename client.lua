@@ -429,9 +429,17 @@ AddEventHandler("weathersync:setMyWeather", function(weather, transition, perman
 	setWeather(weather, transition)
 
 	if permanentSnow then
-		SetSnowCoverageType(3)
+		if Config.isRDR then
+			SetSnowCoverageType(3)
+		end
+
+		snowOnGround = true
 	else
-		SetSnowCoverageType(0)
+		if Config.isRDR then
+			SetSnowCoverageType(0)
+		end
+
+		snowOnGround = false
 	end
 end)
 
