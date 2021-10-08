@@ -255,7 +255,7 @@ local function toggleSync()
 end
 
 exports("isSnowOnGround", function()
-	return snowOnGround or currentWeather == "xmas"
+	return snowOnGround or IsNextWeatherType("XMAS")
 end)
 
 AddEventHandler("weathersync:changeWeather", function(weather, transitionTime, permanentSnow)
