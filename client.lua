@@ -254,6 +254,55 @@ local function toggleSync()
 	})
 end
 
+local function setSyncEnabled(toggle)
+	if syncEnabled ~= toggle then
+		toggleSync()
+	end
+end
+
+local function setMyWeather(weather, transition, permanentSnow)
+	if syncEnabled then
+		toggleSync()
+	end
+
+	if transition <= 0.0 then
+		transition = 0.1
+	end
+
+	setWeather(weather, transition)
+
+	if permanentSnow then
+		if Config.isRDR then
+			SetSnowCoverageType(3)
+		end
+
+		snowOnGround = true
+	else
+		if Config.isRDR then
+			SetSnowCoverageType(0)
+		end
+
+		snowOnGround = false
+	end
+end
+
+local function setMyTime(h, m, s, t)
+	if syncEnabled then
+		toggleSync()
+	end
+
+	if not Config.isRDR then
+		currentTime = {hour = h, minute = m}
+	end
+
+	setTime(h, m, s, t, true)
+end
+
+exports("toggleSync", toggleSync)
+exports("setSyncEnabled", setSyncEnabled)
+exports("setMyWeather", setMyWeather)
+exports("setMyTime", setMyTime)
+
 exports("isSnowOnGround", function()
 	return snowOnGround or IsNextWeatherType("XMAS")
 end)
@@ -407,53 +456,10 @@ RegisterNUICallback("closeAdminUi", function(data, cb)
 	cb({})
 end)
 
-AddEventHandler("weathersync:setSyncEnabled", function(toggle)
-	if syncEnabled ~= toggle then
-		toggleSync()
-	end
-end)
-
-AddEventHandler("weathersync:toggleSync", function()
-	toggleSync()
-end)
-
-AddEventHandler("weathersync:setMyWeather", function(weather, transition, permanentSnow)
-	if syncEnabled then
-		toggleSync()
-	end
-
-	if transition <= 0.0 then
-		transition = 0.1
-	end
-
-	setWeather(weather, transition)
-
-	if permanentSnow then
-		if Config.isRDR then
-			SetSnowCoverageType(3)
-		end
-
-		snowOnGround = true
-	else
-		if Config.isRDR then
-			SetSnowCoverageType(0)
-		end
-
-		snowOnGround = false
-	end
-end)
-
-AddEventHandler("weathersync:setMyTime", function(h, m, s, t)
-	if syncEnabled then
-		toggleSync()
-	end
-
-	if not Config.isRDR then
-		currentTime = {hour = h, minute = m}
-	end
-
-	setTime(h, m, s, t, true)
-end)
+AddEventHandler("weathersync:setSyncEnabled", setSyncEnabled)
+AddEventHandler("weathersync:toggleSync", toggleSync)
+AddEventHandler("weathersync:setMyWeather", setMyWeather)
+AddEventHandler("weathersync:setMyTime", setMyTime)
 
 Citizen.CreateThread(function()
 	SetNuiFocus(false, false)

@@ -267,3 +267,35 @@ exports.weathersync:isSnowOnGround()
 
 #### Return value
 true if there is snow on the ground, false if there is not.
+
+### setMyWeather
+Disable weather and time sync and set a local weather type for this client.
+
+#### Usage
+```lua
+exports.weathersync:setMyWeather(weather, transition, permanentSnow)
+```
+
+### setMyTime
+Disable weather and time sync and set a local time for this client.
+
+#### Usage
+```lua
+exports.weathersync:setMyTime(hour, minute, second, transition, freeze)
+```
+
+### setSyncEnabled
+Enable or disable weather and time sync for this client.
+
+#### Usage
+```lua
+exports.weathersync:setSyncEnabled(toggle)
+```
+
+### toggleSync
+Toggle weather and time sync on/off for this client.
+
+#### Usage
+```lua
+exports.weathersync:toggleSync()
+```
